@@ -1,5 +1,6 @@
 ﻿using Cromede.Player.State;
 using UnityEngine;
+using static Cromede.Player.State.PlayerStateMachine;
 
 namespace Cromede.Player
 {
@@ -28,7 +29,7 @@ namespace Cromede.Player
             if (Physics.Raycast(ray, interactDir, out RaycastHit hit, interactRange, interactLayer))
             {
                 Debug.Log($"{hit.collider.name}");
-                stateMachine.ChangeState(stateMachine.InteractState);
+                stateMachine.ChangeState(PlayerStateType.Interact);
             }
         }
     }

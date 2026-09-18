@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Cromede.Player.State.PlayerStateMachine;
 
 namespace Cromede.Player.State
 {
@@ -20,7 +21,7 @@ namespace Cromede.Player.State
             if (stateMachine.PlayerInput.MoveAction.sqrMagnitude > 0.001f)
             {
                 Debug.Log("상호작용 취소");
-                stateMachine.ChangeState(stateMachine.MoveState);
+                stateMachine.ChangeState(PlayerStateType.Move);
                 return;
             }
 
@@ -28,7 +29,7 @@ namespace Cromede.Player.State
 
             if (interfactTimer >= 3.0f)
             {
-                stateMachine.ChangeState(stateMachine.MoveState);
+                stateMachine.ChangeState(PlayerStateType.Move);
             }
         }
 

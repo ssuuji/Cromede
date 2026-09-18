@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Cromede.Player.State.PlayerStateMachine;
 
 namespace Cromede.Player.State
 {
@@ -8,7 +9,7 @@ namespace Cromede.Player.State
 
         public override void Update()
         {
-            stateMachine.ChangeState(stateMachine.MoveState);
+            stateMachine.ChangeState(PlayerStateType.Move);
         }
     }
 }

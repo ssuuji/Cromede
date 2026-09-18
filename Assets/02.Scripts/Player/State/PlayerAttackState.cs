@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Cromede.Player.State.PlayerStateMachine;
 
 namespace Cromede.Player.State
 {
@@ -37,7 +38,7 @@ namespace Cromede.Player.State
                     StartAttack();
                     return;
                 }
-                stateMachine.ChangeState(stateMachine.MoveState);
+                stateMachine.ChangeState(PlayerStateType.Move);
             }
         }
 

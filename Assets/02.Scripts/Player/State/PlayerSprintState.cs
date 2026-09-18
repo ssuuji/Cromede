@@ -1,4 +1,6 @@
-﻿namespace Cromede.Player.State
+﻿using static Cromede.Player.State.PlayerStateMachine;
+
+namespace Cromede.Player.State
 {
     public class PlayerSprintState : PlayerState
     {
@@ -8,13 +10,13 @@
         {
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
-                stateMachine.ChangeState(stateMachine.DodgeState);
+                stateMachine.ChangeState(PlayerStateType.Dodge);
                 return;
             }
 
             if (stateMachine.PlayerInput.MoveAction.sqrMagnitude <= 0.001f)
             {
-                stateMachine.ChangeState(stateMachine.MoveState);
+                stateMachine.ChangeState(PlayerStateType.Move);
                 return;
             }
 

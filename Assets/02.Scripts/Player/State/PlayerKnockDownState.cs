@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Cromede.Player.State.PlayerStateMachine;
 
 namespace Cromede.Player.State
 {
@@ -17,7 +18,7 @@ namespace Cromede.Player.State
         {
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
-                stateMachine.ChangeState(stateMachine.DodgeState);
+                stateMachine.ChangeState(PlayerStateType.Dodge);
                 return;
             }
 
@@ -25,7 +26,7 @@ namespace Cromede.Player.State
 
             if (knockDownTimer >= 2.0f)
             {
-                stateMachine.ChangeState(stateMachine.MoveState);
+                stateMachine.ChangeState(PlayerStateType.Move);
             }
         }
     }

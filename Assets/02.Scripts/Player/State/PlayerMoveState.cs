@@ -1,4 +1,6 @@
-﻿namespace Cromede.Player.State
+﻿using static Cromede.Player.State.PlayerStateMachine;
+
+namespace Cromede.Player.State
 {
     public class PlayerMoveState : PlayerState
     {
@@ -9,14 +11,14 @@
             //회피
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
-                stateMachine.ChangeState(stateMachine.DodgeState);
+                stateMachine.ChangeState(PlayerStateType.Dodge);
                 return;
             }
 
             //공격
             if (stateMachine.PlayerInput.IsAttack)
             {
-                stateMachine.ChangeState(stateMachine.AttackState);
+                stateMachine.ChangeState(PlayerStateType.Attack);
                 return;
             }
 

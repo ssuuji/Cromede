@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static Cromede.Player.State.PlayerStateMachine;
 
 namespace Cromede.Player.State
 {
@@ -20,7 +21,7 @@ namespace Cromede.Player.State
             //스턴중 회피기 사용가능
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
-                stateMachine.ChangeState(stateMachine.DodgeState);
+                stateMachine.ChangeState(PlayerStateType.Dodge);
                 return;
             }
 
@@ -28,7 +29,7 @@ namespace Cromede.Player.State
 
             if (stunTimer >= 1.0f)
             {
-                stateMachine.ChangeState(stateMachine.MoveState);
+                stateMachine.ChangeState(PlayerStateType.Move);
             }
         }
     }
