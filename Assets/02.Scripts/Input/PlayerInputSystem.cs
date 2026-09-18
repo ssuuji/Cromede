@@ -11,9 +11,9 @@ namespace Cromede.Input
         private InputAction lookAction;            //마우스 이동
         private InputAction jumpAction;            //점프 Space
         private InputAction attackAction;          //기본공격 왼쪽마우스
-        private InputAction secondaryAttackAction; //보조공격 오른쪽마우스
+        private InputAction secondaryAttackAction; //보조공격 오른쪽마우스    X
         private InputAction sprintAction;          //회피/스프린트 Shift
-        private InputAction targetChangeAction;    //타겟 변경 Tab
+        private InputAction targetChangeAction;    //타겟 변경 Tab           X
         private InputAction interactAction;        //상호작용 F
         private InputAction cursorModeAction;      //마우스 커서 활성화 Alt
 
@@ -48,12 +48,12 @@ namespace Cromede.Input
 
         private void OnDisable()
         {
-            inputActions.Player.Disable();
+            inputActions?.Player.Disable();
         }
 
         private void OnDestroy()
         {
-            inputActions.Dispose();
+            inputActions?.Dispose();
         }
     }
 }

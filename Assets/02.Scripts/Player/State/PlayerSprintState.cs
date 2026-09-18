@@ -1,22 +1,10 @@
-﻿using UnityEngine;
-
-namespace Cromede.Player.State
+﻿namespace Cromede.Player.State
 {
-    public class PlayerSprintState : IPlayerState
+    public class PlayerSprintState : PlayerState
     {
-        private PlayerStateMachine stateMachine;
+        public PlayerSprintState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
-        public PlayerSprintState(PlayerStateMachine stateMachine)
-        {
-            this.stateMachine = stateMachine;
-        }
-
-        public void Enter()
-        {
-
-        }
-
-        public void Update()
+        public override void Update()
         {
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
@@ -32,11 +20,5 @@ namespace Cromede.Player.State
 
             stateMachine.PlayerMovement.Sprint();
         }
-
-        public void Exit()
-        {
-
-        }
     }
-
 }

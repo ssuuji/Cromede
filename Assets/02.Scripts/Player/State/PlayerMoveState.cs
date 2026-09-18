@@ -1,33 +1,33 @@
 ﻿namespace Cromede.Player.State
 {
-    public class PlayerMoveState : IPlayerState
+    public class PlayerMoveState : PlayerState
     {
-        private PlayerStateMachine stateMachine;
+        public PlayerMoveState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
-
-        public PlayerMoveState(PlayerStateMachine stateMachine)
+        public override void Update()
         {
-            this.stateMachine = stateMachine;
-        }
-
-        public void Enter()
-        {
-
-        }
-
-        public void Update()
-        {
-            stateMachine.PlayerMovement.Move();
-
+            //회피
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
                 stateMachine.ChangeState(stateMachine.DodgeState);
+                return;
             }
-        }
 
-        public void Exit()
-        {
+            //공격
+            if (stateMachine.PlayerInput.IsAttack)
+            {
+                stateMachine.ChangeState(stateMachine.AttackState);
+                return;
+            }
 
+            //상호작용
+            if (stateMachine.PlayerInput.IsInteract)
+            {
+                stateMachine.PlayerInteract.Interact();
+                return;
+            }
+
+            stateMachine.PlayerMovement.Move(true);
         }
     }
 }

@@ -19,11 +19,24 @@ namespace Cromede.Camera
         {
             offset = transform.position - player.position;
             playerInput = player.GetComponent<PlayerInputSystem>();
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         private void LateUpdate()
         {
             transform.position = player.position + offset;
+
+            //Alt 마우스 보이기
+            if (playerInput.IsCursorMode)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+                return;
+            }
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
 
             //좌우회전
             float mouseX = playerInput.LookAction.x; //좌우 이동값

@@ -469,7 +469,10 @@ GameObject:
   - component: {fileID: 429386302}
   - component: {fileID: 429386304}
   - component: {fileID: 429386305}
+  - component: {fileID: 429386307}
   - component: {fileID: 429386303}
+  - component: {fileID: 429386306}
+  - component: {fileID: 429386308}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -536,6 +539,9 @@ MonoBehaviour:
   jumpForce: 5.5
   dodgeSpeed: 25
   dodgeDuration: 0.2
+  sprintSpeed: 10
+  damageSlowDuration: 1
+  damageSlowSpeedRate: 0.5
 --- !u!114 &429386304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,6 +566,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2793c5a003481064b83ab9ee8316cff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cromede.Player.State.PlayerStateMachine
+--- !u!114 &429386306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 429386300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17ad26cc7cf843446bbfdbfa855b2fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cromede.Player.PlayerAttack
+  mainCamera: {fileID: 330585546}
+  attackDuration: 0.5
+  attackDamage: 10
+  attackRange: 1.5
+  attackAngle: 45
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  comboIndex: 0
+  nextAttack: 0
+--- !u!114 &429386307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 429386300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f092716c77710946b6876348a2ed6d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  maxHealth: 100
+--- !u!114 &429386308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 429386300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6f83c423d31cb64c8da63ef2a41ccbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cromede.Player.PlayerInteract
+  mainCamera: {fileID: 330585546}
+  interactRange: 3
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -614,6 +672,120 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1220590441508598588, guid: aedb43883b46aa84c9c53590a047ab48, type: 3}
   m_PrefabInstance: {fileID: 108091800}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1554731755
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5085058761718122987, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_Name
+      value: MOB_FireEle_04
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 171.01726
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.7664629
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 137.1758
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.0024778664
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.9999969
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180.284
+      objectReference: {fileID: 0}
+    - target: {fileID: 5609816816198226769, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+--- !u!1001 &1596098247
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 173.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.7664647
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 135.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5820698
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.8131389
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -108.808
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_Name
+      value: MOB_Gargoyle_01
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
 --- !u!1 &1962005667
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,3 +968,5 @@ SceneRoots:
   - {fileID: 1962005670}
   - {fileID: 805764836997820094}
   - {fileID: 429386301}
+  - {fileID: 1554731755}
+  - {fileID: 1596098247}

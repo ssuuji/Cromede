@@ -2,19 +2,14 @@
 
 namespace Cromede.Player.State
 {
-    public class PlayerDodgeState : IPlayerState
+    public class PlayerDodgeState : PlayerState
     {
-        private PlayerStateMachine stateMachine;
+        public PlayerDodgeState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
         private Vector3 dodgeDir;
         private float dodgeTimer;
 
-        public PlayerDodgeState(PlayerStateMachine stateMachine)
-        {
-            this.stateMachine = stateMachine;
-        }
-
-        public void Enter()
+        public override void Enter()
         {
             dodgeDir = stateMachine.PlayerMovement.GetMoveDir();
 
@@ -25,7 +20,7 @@ namespace Cromede.Player.State
 
             dodgeTimer = 0.0f;
         }
-        public void Update()
+        public override void Update()
         {
             stateMachine.PlayerMovement.Dodge(dodgeDir);
 
@@ -35,11 +30,6 @@ namespace Cromede.Player.State
             {
                 stateMachine.ChangeState(stateMachine.SprintState);
             }
-        }
-
-        public void Exit()
-        {
-
         }
     }
 }
