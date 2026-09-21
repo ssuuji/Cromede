@@ -29,6 +29,9 @@ namespace Cromede.Player.State
                 return;
             }
 
+            //애니메이션
+            stateMachine.PlayerAnimation.SetMoveMagnitude(stateMachine.PlayerInput.MoveAction.magnitude);
+
             stateMachine.PlayerMovement.Move(true);
         }
     }

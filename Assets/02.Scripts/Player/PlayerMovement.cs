@@ -9,18 +9,18 @@ namespace Cromede.Player
         [SerializeField] private Transform mainCamera;
 
         [Header("이동")]
-        [SerializeField] private float moveSpeed = 5.0f;       //이동속도
-        [SerializeField] private float rotationSpeed = 2000f;  //초당 회전 속도
+        [SerializeField] private float moveSpeed = 5f;       //이동속도
+        [SerializeField] private float rotationSpeed = 720;  //초당 회전 속도
 
         [Header("점프")]
         [SerializeField] private float jumpForce = 5.5f;       //점프 힘
 
         [Header("회피")]
-        [SerializeField] private float dodgeSpeed = 25.0f;     //회피 속도
-        [SerializeField] private float dodgeDuration = 0.2f;   //회피 유지시간
+        //[SerializeField] private float dodgeSpeed = 25.0f;     //회피 속도 //-> 루트모션으로 변경
+        [SerializeField] private float dodgeDuration = 0.833f;   //회피 유지시간
 
-        [Header("질주")]
-        [SerializeField] private float sprintSpeed = 10.0f;
+        //[Header("질주")] //-> 루트모션으로 변경
+        //[SerializeField] private float sprintSpeed = 10.0f;   
 
         [Header("피격")]
         [SerializeField] private float damageSlowDuration = 1.0f;
@@ -32,16 +32,20 @@ namespace Cromede.Player
 
         private float verticalVelocity; //현재 플레이어의 Y축 속도
         private float damageSlowEndTime;
+        private Quaternion targetRotation;
 
 
         public bool IsGrounded => characterController.isGrounded;
         public float DodgeDuration => dodgeDuration;
+
 
         private void Awake()
         {
             characterController = GetComponent<CharacterController>();
             playerInput = GetComponent<PlayerInputSystem>();
             playerHealth = GetComponent<PlayerHealth>();
+
+            targetRotation = transform.rotation;
         }
 
         private void OnEnable()
@@ -104,9 +108,14 @@ namespace Cromede.Player
         //이동방향으로 캐릭터 회전
         private void Rotation(Vector3 moveDir)
         {
-            if (moveDir.sqrMagnitude <= 0.001f) return; //이동입력이 거의 없으면 회전하지 않음
+            //if (moveDir.sqrMagnitude <= 0.001f) return; //이동입력이 거의 없으면 회전하지 않음
+            //Quaternion targetRotation = Quaternion.LookRotation(moveDir); //회전값
+            //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir); //회전값
+            if (moveDir.sqrMagnitude > 0.001f)
+            {
+                targetRotation = Quaternion.LookRotation(moveDir);
+            }
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
@@ -131,22 +140,23 @@ namespace Cromede.Player
             verticalVelocity = jumpForce;
         }
 
-        //회피
-        public void Dodge(Vector3 dodgeDir)
-        {
-            Gravity();
+        //회피 // -> 루트모션으로 변경
+        //public void Dodge(Vector3 dodgeDir)
+        //{
+        //    Gravity();
 
-            Vector3 velocity = dodgeDir * dodgeSpeed; //회피!
-            velocity.y = verticalVelocity;
+        //    Vector3 velocity = dodgeDir * dodgeSpeed; //회피!
+        //    velocity.y = verticalVelocity;
 
-            characterController.Move(velocity * Time.deltaTime);
-        }
+        //    characterController.Move(velocity * Time.deltaTime);
+        //}
 
         //질주
 
         public void Sprint()
         {
-            MoveCharacter(sprintSpeed, true);
+            //MoveCharacter(sprintSpeed, true); //-> 루트모션으로 변경
+            Move(true);
         }
 
         //피격
@@ -154,8 +164,15 @@ namespace Cromede.Player
         {
             //현재시간에 슬로우 지속시간을 더해서 = 슬로우가 끝나는 시간 저장
             damageSlowEndTime = Time.time + damageSlowDuration;
+        }
 
-            Debug.Log($"슬로우시작 | 종료시간은 {damageSlowEndTime}");
+        //루트모션
+        public void MoveRootMotion(Vector3 deltaPos)
+        {
+            Gravity(); //Y만 기존중력으로
+
+            deltaPos.y = verticalVelocity * Time.deltaTime;
+            characterController.Move(deltaPos);
         }
     }
 }

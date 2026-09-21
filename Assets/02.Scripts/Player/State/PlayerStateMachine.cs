@@ -20,45 +20,29 @@ namespace Cromede.Player.State
         }
 
         private Dictionary<PlayerStateType, PlayerState> states;
-        private PlayerState currentState;     //현재 플레이어 상태 
-        private PlayerInputSystem playerInput; //인풋시스템
+        private PlayerState currentState;      //현재 플레이어 상태 
 
-        private PlayerMovement playerMovement; //이동
-        private PlayerAttack playerAttack;     //공격
-        private PlayerInteract playerInteract; //상호작용
-
-        //private PlayerMoveState moveState;           //이동상태
-        //private PlayerDodgeState dodgeState;         //회피상태
-        //private PlayerSprintState sprintState;       //질주상태
-        //private PlayerAttackState attackState;       //공격상태
-        //private PlayerStunState stunState;           //스턴상태
-        //private PlayerKnockDownState knockDownState; //넉다운상태
-        //private PlayerInteractState interactState;   //상호작용상태
+        private PlayerInputSystem playerInput;   //인풋시스템
+        private PlayerMovement playerMovement;   //이동
+        private PlayerAttack playerAttack;       //공격
+        private PlayerInteract playerInteract;   //상호작용
+        private PlayerAnimation playerAnimation; //애니메이션
 
 
         public PlayerInputSystem PlayerInput => playerInput;
-
         public PlayerMovement PlayerMovement => playerMovement;
         public PlayerAttack PlayerAttack => playerAttack;
         public PlayerInteract PlayerInteract => playerInteract;
-
-        //상태
-        //public PlayerMoveState MoveState => moveState;
-        //public PlayerDodgeState DodgeState => dodgeState;
-        //public PlayerSprintState SprintState => sprintState;
-        //public PlayerAttackState AttackState => attackState;
-        //public PlayerStunState StunState => stunState;
-        //public PlayerKnockDownState KnockDownState => knockDownState;
-        //public PlayerInteractState InteractState => interactState;
-
+        public PlayerAnimation PlayerAnimation => playerAnimation;
+        
 
         private void Awake()
         {
             playerInput = GetComponent<PlayerInputSystem>();
-
             playerMovement = GetComponent<PlayerMovement>();
             playerAttack = GetComponent<PlayerAttack>();
             playerInteract = GetComponent<PlayerInteract>();
+            playerAnimation = GetComponentInChildren<PlayerAnimation>();
 
             //아래애들을 딕셔너리에 등록
             states = new Dictionary<PlayerStateType, PlayerState>()
@@ -71,13 +55,6 @@ namespace Cromede.Player.State
                 { PlayerStateType.KnockDown, new PlayerKnockDownState(this) },
                 { PlayerStateType.Interact, new PlayerInteractState(this) }
             };
-            //moveState = new PlayerMoveState(this);
-            //dodgeState = new PlayerDodgeState(this);
-            //sprintState = new PlayerSprintState(this);
-            //attackState = new PlayerAttackState(this);
-            //stunState = new PlayerStunState(this);
-            //knockDownState = new PlayerKnockDownState(this);
-            //interactState = new PlayerInteractState(this);
         }
         private void Start()
         {
