@@ -5,7 +5,6 @@ namespace Cromede.Player
 {
     public class PlayerAttack : MonoBehaviour
     {
-        [SerializeField] private Transform mainCamera;
         [Header("공격")]
         [SerializeField] private float attackDuration = 0.5f;
         [SerializeField] private int attackDamage = 10;
@@ -23,12 +22,9 @@ namespace Cromede.Player
 
         public void Attack()
         {
-            //카메라 방향으로 공격. 해당 방향으로 몸을 돌려 공격.
-            Vector3 attackDir = mainCamera.forward;
+            Vector3 attackDir = transform.forward;
             attackDir.y = 0.0f;
             attackDir.Normalize();
-            transform.rotation = Quaternion.LookRotation(attackDir);
-
 
             Collider[] targets = Physics.OverlapSphere(transform.position, attackRange, enemyLayer);
             foreach (Collider target in targets)

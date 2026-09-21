@@ -210,6 +210,24 @@ namespace Cromede.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Button"",
+                    ""id"": ""f0d94825-cd88-4be2-aaae-cb799ca10f03"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ESC"",
+                    ""type"": ""Button"",
+                    ""id"": ""9bc18f5e-37c4-4615-98e1-af80f308becf"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -628,6 +646,28 @@ namespace Cromede.Input
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CursorMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""645c03d1-e2fe-48ab-b1a1-6385525b654e"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c24fb2ae-7337-4348-a46b-8bdf71543a93"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ESC"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1228,6 +1268,8 @@ namespace Cromede.Input
             m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
             m_Player_TargetChange = m_Player.FindAction("TargetChange", throwIfNotFound: true);
             m_Player_CursorMode = m_Player.FindAction("CursorMode", throwIfNotFound: true);
+            m_Player_Zoom = m_Player.FindAction("Zoom", throwIfNotFound: true);
+            m_Player_ESC = m_Player.FindAction("ESC", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1334,6 +1376,8 @@ namespace Cromede.Input
         private readonly InputAction m_Player_Dodge;
         private readonly InputAction m_Player_TargetChange;
         private readonly InputAction m_Player_CursorMode;
+        private readonly InputAction m_Player_Zoom;
+        private readonly InputAction m_Player_ESC;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1397,6 +1441,14 @@ namespace Cromede.Input
             /// Provides access to the underlying input action "Player/CursorMode".
             /// </summary>
             public InputAction @CursorMode => m_Wrapper.m_Player_CursorMode;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/Zoom".
+            /// </summary>
+            public InputAction @Zoom => m_Wrapper.m_Player_Zoom;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/ESC".
+            /// </summary>
+            public InputAction @ESC => m_Wrapper.m_Player_ESC;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1462,6 +1514,12 @@ namespace Cromede.Input
                 @CursorMode.started += instance.OnCursorMode;
                 @CursorMode.performed += instance.OnCursorMode;
                 @CursorMode.canceled += instance.OnCursorMode;
+                @Zoom.started += instance.OnZoom;
+                @Zoom.performed += instance.OnZoom;
+                @Zoom.canceled += instance.OnZoom;
+                @ESC.started += instance.OnESC;
+                @ESC.performed += instance.OnESC;
+                @ESC.canceled += instance.OnESC;
             }
 
             /// <summary>
@@ -1512,6 +1570,12 @@ namespace Cromede.Input
                 @CursorMode.started -= instance.OnCursorMode;
                 @CursorMode.performed -= instance.OnCursorMode;
                 @CursorMode.canceled -= instance.OnCursorMode;
+                @Zoom.started -= instance.OnZoom;
+                @Zoom.performed -= instance.OnZoom;
+                @Zoom.canceled -= instance.OnZoom;
+                @ESC.started -= instance.OnESC;
+                @ESC.performed -= instance.OnESC;
+                @ESC.canceled -= instance.OnESC;
             }
 
             /// <summary>
@@ -1903,6 +1967,20 @@ namespace Cromede.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnCursorMode(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Zoom" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnZoom(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "ESC" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnESC(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

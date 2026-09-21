@@ -17,7 +17,7 @@ namespace Cromede.Player.State
 
             if (dodgeDir.sqrMagnitude <= 0.001f)
             {
-                dodgeDir = stateMachine.transform.forward;
+                dodgeDir = -stateMachine.transform.forward;
             }
 
             //애니메이션

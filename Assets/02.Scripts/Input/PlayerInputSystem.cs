@@ -11,11 +11,13 @@ namespace Cromede.Input
         private InputAction lookAction;            //마우스 이동
         private InputAction jumpAction;            //점프 Space
         private InputAction attackAction;          //기본공격 왼쪽마우스
-        private InputAction secondaryAttackAction; //보조공격 오른쪽마우스    X
+        private InputAction secondaryAttackAction; //보조공격 오른쪽마우스   
         private InputAction sprintAction;          //회피/스프린트 Shift
-        private InputAction targetChangeAction;    //타겟 변경 Tab           X
+        private InputAction targetChangeAction;    //타겟 변경 Tab          
         private InputAction interactAction;        //상호작용 F
         private InputAction cursorModeAction;      //마우스 커서 활성화 Alt
+        private InputAction zoomAction;            //줌 스크롤Y
+        private InputAction escAction;             //닫기 ESC
 
         public Vector2 MoveAction => moveAction.ReadValue<Vector2>();
         public Vector2 LookAction => lookAction.ReadValue<Vector2>();
@@ -26,6 +28,8 @@ namespace Cromede.Input
         public bool IsTargetChange => targetChangeAction.WasPressedThisFrame();
         public bool IsInteract => interactAction.WasPressedThisFrame();
         public bool IsCursorMode => cursorModeAction.IsPressed();
+        public float ZoomAction => zoomAction.ReadValue<float>(); // scroll y Axis값이라 float 사용
+        public bool IsEsc => escAction.WasPressedThisFrame();
 
         private void Awake()
         {
@@ -39,6 +43,8 @@ namespace Cromede.Input
             targetChangeAction = inputActions.Player.TargetChange;
             interactAction = inputActions.Player.Interact;
             cursorModeAction = inputActions.Player.CursorMode;
+            zoomAction = inputActions.Player.Zoom;
+            escAction = inputActions.Player.ESC;
         }
 
         private void OnEnable()

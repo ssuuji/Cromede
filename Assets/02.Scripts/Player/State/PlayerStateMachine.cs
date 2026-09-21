@@ -8,6 +8,7 @@ namespace Cromede.Player.State
 
     public class PlayerStateMachine : MonoBehaviour
     {
+        
         public enum PlayerStateType
         {
             Move,
@@ -27,6 +28,7 @@ namespace Cromede.Player.State
         private PlayerAttack playerAttack;       //공격
         private PlayerInteract playerInteract;   //상호작용
         private PlayerAnimation playerAnimation; //애니메이션
+        [SerializeField] private PlayerTargeting playerTargeting; //타겟팅 (카메라에 붙어있음)
 
 
         public PlayerInputSystem PlayerInput => playerInput;
@@ -34,7 +36,8 @@ namespace Cromede.Player.State
         public PlayerAttack PlayerAttack => playerAttack;
         public PlayerInteract PlayerInteract => playerInteract;
         public PlayerAnimation PlayerAnimation => playerAnimation;
-        
+        public PlayerTargeting PlayerTargeting => playerTargeting;
+
 
         private void Awake()
         {

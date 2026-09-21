@@ -1,4 +1,5 @@
-﻿using static Cromede.Player.State.PlayerStateMachine;
+﻿using UnityEngine;
+using static Cromede.Player.State.PlayerStateMachine;
 
 namespace Cromede.Player.State
 {
@@ -32,7 +33,20 @@ namespace Cromede.Player.State
             //애니메이션
             stateMachine.PlayerAnimation.SetMoveMagnitude(stateMachine.PlayerInput.MoveAction.magnitude);
 
-            stateMachine.PlayerMovement.Move(true);
+            Transform currentTarget = stateMachine.PlayerTargeting.CurrentTarget;
+
+            if (currentTarget == null)
+            {
+                stateMachine.PlayerAnimation.SetMoveDir(0.0f, 1.0f);
+            }
+            else
+            {
+                Vector3 moveDir = stateMachine.PlayerMovement.GetMoveDir();
+                Vector3 localMoveDir = stateMachine.transform.InverseTransformDirection(moveDir);
+                stateMachine.PlayerAnimation.SetMoveDir(localMoveDir.x, localMoveDir.z);
+            }
+
+            stateMachine.PlayerMovement.Move(true, currentTarget);
         }
     }
 }

@@ -59,13 +59,13 @@ namespace Cromede.Player
         }
 
         //이동
-        public void Move(bool rotateCharacter)
+        public void Move(bool rotateCharacter, Transform target = null)
         {
-            MoveCharacter(moveSpeed, rotateCharacter);
+            MoveCharacter(moveSpeed, rotateCharacter, target);
         }
 
         //공통 이동(걷기,달리기)
-        private void MoveCharacter(float speed, bool rotateCharacter)
+        private void MoveCharacter(float speed, bool rotateCharacter, Transform target)
         {
             Jump();
             Gravity();
@@ -74,7 +74,15 @@ namespace Cromede.Player
 
             if (rotateCharacter)
             {
-                Rotation(moveDir);
+                Vector3 rotateDir = moveDir;
+
+                if (target != null)
+                {
+                    rotateDir = target.position - transform.position;
+                    rotateDir.y = 0.0f;
+                }
+
+                Rotation(rotateDir);
             }
 
             float speedRate = Time.time < damageSlowEndTime ? damageSlowSpeedRate : 1.0f;
@@ -112,6 +120,7 @@ namespace Cromede.Player
             //Quaternion targetRotation = Quaternion.LookRotation(moveDir); //회전값
             //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
+            //입력값이 들어오면 회전 방향 저장
             if (moveDir.sqrMagnitude > 0.001f)
             {
                 targetRotation = Quaternion.LookRotation(moveDir);

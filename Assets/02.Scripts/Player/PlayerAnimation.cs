@@ -1,12 +1,16 @@
-﻿using UnityEngine;
+﻿using UnityEditor.ShaderGraph.Internal;
+using UnityEngine;
 
 namespace Cromede.Player
 {
     public class PlayerAnimation : MonoBehaviour
     {
         [SerializeField] private Animator animator;
+        [SerializeField] private float moveDirDampTime = 0.1f;
 
         private static readonly int MoveMagnitudeHash = Animator.StringToHash("MoveMagnitude");
+        private static readonly int MoveXHash = Animator.StringToHash("MoveX");
+        private static readonly int MoveYHash = Animator.StringToHash("MoveY");
         private static readonly int DodgeHash = Animator.StringToHash("Dodge");
         private static readonly int DodgeXHash = Animator.StringToHash("DodgeX");
         private static readonly int DodgeYHash = Animator.StringToHash("DodgeY");
@@ -23,6 +27,13 @@ namespace Cromede.Player
         public void SetMoveMagnitude(float moveMagnitude)
         {
             animator.SetFloat(MoveMagnitudeHash, moveMagnitude);
+        }
+
+        //이동
+        public void SetMoveDir(float moveX, float moveY)
+        {
+            animator.SetFloat(MoveXHash, moveX, moveDirDampTime, Time.deltaTime);
+            animator.SetFloat(MoveYHash, moveY, moveDirDampTime, Time.deltaTime);
         }
 
         //회피
@@ -108,8 +119,6 @@ namespace Cromede.Player
         }
         private void OnAnimatorMove()
         {
-            Debug.Log($"RootMotion Delta : {animator.deltaPosition.ToString("F6")}");
-
             if (!useRootMotion) return;
 
             playerMovement.MoveRootMotion(animator.deltaPosition);
