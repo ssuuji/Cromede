@@ -330,7 +330,7 @@ MonoBehaviour:
   player: {fileID: 429386301}
   cameraRotation: 0.1
   minRotation: -12
-  maxRotation: 90
+  maxRotation: 82
   cameraTarget: {fileID: 694766970}
   minZoomDistance: 2
   maxZoomDistance: 16
@@ -637,6 +637,7 @@ MonoBehaviour:
   rotationSpeed: 450
   jumpForce: 5.5
   dodgeDuration: 0.833
+  dodgeRootMotionScale: 1
   damageSlowDuration: 1
   damageSlowSpeedRate: 0.5
 --- !u!114 &429386304

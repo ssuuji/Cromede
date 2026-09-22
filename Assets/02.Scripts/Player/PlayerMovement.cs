@@ -1,5 +1,6 @@
 ﻿using Cromede.Input;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Cromede.Player
 {
@@ -12,15 +13,14 @@ namespace Cromede.Player
         [SerializeField] private float moveSpeed = 5f;       //이동속도
         [SerializeField] private float rotationSpeed = 720;  //초당 회전 속도
 
+        [Header("질주")]
+        [SerializeField] private float sprintSpeed = 8.0f;
         [Header("점프")]
         [SerializeField] private float jumpForce = 5.5f;       //점프 힘
 
         [Header("회피")]
-        //[SerializeField] private float dodgeSpeed = 25.0f;     //회피 속도 //-> 루트모션으로 변경
-        [SerializeField] private float dodgeDuration = 0.833f;   //회피 유지시간
-
-        //[Header("질주")] //-> 루트모션으로 변경
-        //[SerializeField] private float sprintSpeed = 10.0f;   
+        [SerializeField] private float dodgeDuration = 0.833f;      //회피 유지시간
+        [SerializeField] private float dodgeMoveCancelTime = 0.35f;
 
         [Header("피격")]
         [SerializeField] private float damageSlowDuration = 1.0f;
@@ -33,10 +33,11 @@ namespace Cromede.Player
         private float verticalVelocity; //현재 플레이어의 Y축 속도
         private float damageSlowEndTime;
         private Quaternion targetRotation;
-
+        
 
         public bool IsGrounded => characterController.isGrounded;
         public float DodgeDuration => dodgeDuration;
+        public float DodgeMoveCancelTime => dodgeMoveCancelTime;
 
 
         private void Awake()
@@ -116,10 +117,6 @@ namespace Cromede.Player
         //이동방향으로 캐릭터 회전
         private void Rotation(Vector3 moveDir)
         {
-            //if (moveDir.sqrMagnitude <= 0.001f) return; //이동입력이 거의 없으면 회전하지 않음
-            //Quaternion targetRotation = Quaternion.LookRotation(moveDir); //회전값
-            //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
             //입력값이 들어오면 회전 방향 저장
             if (moveDir.sqrMagnitude > 0.001f)
             {
@@ -129,12 +126,18 @@ namespace Cromede.Player
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
+        public void ResetTargetRotation()
+        {
+            //회전 초기화
+            targetRotation = transform.rotation;
+        }
+
         //중력 계산
         private void Gravity()
         {
             if (characterController.isGrounded && verticalVelocity < 0.0f)
             {
-                verticalVelocity = -2.0f; //가만히 서있을땐 0.0f 이면 누르는 힘이 없어서 땅 판정이 불안정해서 isGrounded가 가끔 false남 . 그래서 -2 값으로 강제로 눌러줌
+                verticalVelocity = -2.0f; //가만히 서있을땐 0.0f 이면 누르는 힘이 없어서 땅 판정이 불안정해서 isGrounded가 가끔 false남. 그래서 -2 값으로 강제로 눌러줌
             }
 
             verticalVelocity += Physics.gravity.y * Time.deltaTime; //아래 방향 속도 증가
@@ -149,23 +152,11 @@ namespace Cromede.Player
             verticalVelocity = jumpForce;
         }
 
-        //회피 // -> 루트모션으로 변경
-        //public void Dodge(Vector3 dodgeDir)
-        //{
-        //    Gravity();
-
-        //    Vector3 velocity = dodgeDir * dodgeSpeed; //회피!
-        //    velocity.y = verticalVelocity;
-
-        //    characterController.Move(velocity * Time.deltaTime);
-        //}
-
         //질주
 
         public void Sprint()
         {
-            //MoveCharacter(sprintSpeed, true); //-> 루트모션으로 변경
-            Move(true);
+            MoveCharacter(sprintSpeed, true, null);
         }
 
         //피격

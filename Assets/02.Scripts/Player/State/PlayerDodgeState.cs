@@ -11,6 +11,7 @@ namespace Cromede.Player.State
 
         public override void Enter()
         {
+            stateMachine.PlayerMovement.ResetTargetRotation();
             stateMachine.PlayerAnimation.SetRootMotion(true);
 
             Vector3 dodgeDir = stateMachine.PlayerMovement.GetMoveDir();
@@ -28,14 +29,20 @@ namespace Cromede.Player.State
         }
         public override void Update()
         {
-            //stateMachine.PlayerMovement.Dodge(dodgeDir); //->루트모션으로 변경
-
             //움직임여부 전송
             float moveMagnitude = stateMachine.PlayerInput.MoveAction.magnitude;
             stateMachine.PlayerAnimation.SetMoveMagnitude(moveMagnitude);
             
             dodgeTimer += Time.deltaTime;
 
+            // 이동 입력이 있으면 Recovery 구간 전에 바로 달리기로 복귀
+            if (moveMagnitude > 0.1f && dodgeTimer >= stateMachine.PlayerMovement.DodgeMoveCancelTime)
+            {
+                stateMachine.ChangeState(PlayerStateType.Sprint);
+                return;
+            }
+
+            // 이동 입력이 없으면 Dodge 전체 재생
             if (dodgeTimer >= stateMachine.PlayerMovement.DodgeDuration)
             {
                 stateMachine.ChangeState(PlayerStateType.Move);

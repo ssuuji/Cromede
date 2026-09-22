@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 
 namespace Cromede.Player.State
 {
-
     public class PlayerStateMachine : MonoBehaviour
     {
         

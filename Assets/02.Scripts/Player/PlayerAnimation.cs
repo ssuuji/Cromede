@@ -1,5 +1,4 @@
-﻿using UnityEditor.ShaderGraph.Internal;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Cromede.Player
 {
@@ -14,6 +13,8 @@ namespace Cromede.Player
         private static readonly int DodgeHash = Animator.StringToHash("Dodge");
         private static readonly int DodgeXHash = Animator.StringToHash("DodgeX");
         private static readonly int DodgeYHash = Animator.StringToHash("DodgeY");
+        private static readonly int SprintHash = Animator.StringToHash("Sprint");
+        private static readonly int SprintStopHash = Animator.StringToHash("SprintStop");
 
         private PlayerMovement playerMovement;
         private bool useRootMotion;
@@ -110,6 +111,17 @@ namespace Cromede.Player
             }
 
             return new Vector2(dodgeAniX, dodgeAniY);
+        }
+
+        //질주
+        public void SetSprint()
+        {
+            animator.SetTrigger(SprintHash);
+        }
+
+        public void SetSprintStop()
+        {
+            animator.SetTrigger(SprintStopHash);
         }
 
         //루트모션

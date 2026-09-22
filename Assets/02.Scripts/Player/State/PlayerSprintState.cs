@@ -6,6 +6,12 @@ namespace Cromede.Player.State
     {
         public PlayerSprintState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
+        public override void Enter()
+        {
+            stateMachine.PlayerAnimation.SetSprint();
+        }
+
+
         public override void Update()
         {
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
@@ -16,11 +22,13 @@ namespace Cromede.Player.State
 
             if (stateMachine.PlayerInput.MoveAction.sqrMagnitude <= 0.001f)
             {
+                stateMachine.PlayerAnimation.SetSprintStop();
                 stateMachine.ChangeState(PlayerStateType.Move);
                 return;
             }
 
             stateMachine.PlayerMovement.Sprint();
         }
+
     }
 }
