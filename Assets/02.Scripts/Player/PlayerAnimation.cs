@@ -15,6 +15,10 @@ namespace Cromede.Player
         private static readonly int DodgeYHash = Animator.StringToHash("DodgeY");
         private static readonly int SprintHash = Animator.StringToHash("Sprint");
         private static readonly int SprintStopHash = Animator.StringToHash("SprintStop");
+        private static readonly int JumpHash = Animator.StringToHash("Jump");
+        private static readonly int JumpLandHash = Animator.StringToHash("JumpLand");
+        private static readonly int JumpLandRunHash = Animator.StringToHash("JumpLandRun");
+        private static readonly int SprintJumpHash = Animator.StringToHash("SprintJump");
 
         private PlayerMovement playerMovement;
         private bool useRootMotion;
@@ -23,6 +27,8 @@ namespace Cromede.Player
         {
             playerMovement = GetComponentInParent<PlayerMovement>();
         }
+
+        #region 이동
 
         //움직임 여부
         public void SetMoveMagnitude(float moveMagnitude)
@@ -36,6 +42,10 @@ namespace Cromede.Player
             animator.SetFloat(MoveXHash, moveX, moveDirDampTime, Time.deltaTime);
             animator.SetFloat(MoveYHash, moveY, moveDirDampTime, Time.deltaTime);
         }
+
+        #endregion
+
+        #region 회피
 
         //회피
         public void SetDodge(float dodgeX, float dodgeY)
@@ -112,6 +122,9 @@ namespace Cromede.Player
 
             return new Vector2(dodgeAniX, dodgeAniY);
         }
+        #endregion
+
+        #region 질주
 
         //질주
         public void SetSprint()
@@ -124,16 +137,47 @@ namespace Cromede.Player
             animator.SetTrigger(SprintStopHash);
         }
 
+        #endregion
+
+        #region 점프
+
+        //점프
+        public void SetJump()
+        {
+            animator.SetTrigger(JumpHash);
+        }
+        public void SetJumpLand()
+        {
+            animator.SetTrigger(JumpLandHash);
+        }
+
+        public void SetJumpLandRun()
+        {
+            animator.SetTrigger(JumpLandRunHash);
+        }
+
+        public void SetSprintJump()
+        {
+            animator.SetTrigger(SprintJumpHash);
+        }
+
+        #endregion
+
+        #region 루트모션
+
         //루트모션
         public void SetRootMotion(bool useRootMotion)
         {
             this.useRootMotion = useRootMotion;
         }
+       
         private void OnAnimatorMove()
         {
             if (!useRootMotion) return;
 
             playerMovement.MoveRootMotion(animator.deltaPosition);
         }
+
+        #endregion
     }
 }

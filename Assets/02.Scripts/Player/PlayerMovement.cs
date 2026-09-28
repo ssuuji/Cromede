@@ -15,8 +15,11 @@ namespace Cromede.Player
 
         [Header("질주")]
         [SerializeField] private float sprintSpeed = 8.0f;
+
         [Header("점프")]
-        [SerializeField] private float jumpForce = 5.5f;       //점프 힘
+        [SerializeField] private float jumpForce = 10.5f;             //점프 힘
+        [SerializeField] private float jumpGravity = 2.0f;            //중력
+        [SerializeField] private float airMoveSpeedRate = 0.5f;       //공중에서 앞으로가는 속도
 
         [Header("회피")]
         [SerializeField] private float dodgeDuration = 0.833f;      //회피 유지시간
@@ -33,7 +36,7 @@ namespace Cromede.Player
         private float verticalVelocity; //현재 플레이어의 Y축 속도
         private float damageSlowEndTime;
         private Quaternion targetRotation;
-        
+        private Vector3 jumpStartVelocity;
 
         public bool IsGrounded => characterController.isGrounded;
         public float DodgeDuration => dodgeDuration;
@@ -66,10 +69,9 @@ namespace Cromede.Player
         }
 
         //공통 이동(걷기,달리기)
-        private void MoveCharacter(float speed, bool rotateCharacter, Transform target)
+        private void MoveCharacter(float speed, bool rotateCharacter, Transform target, float gravityMultiplier = 1.0f)
         {
-            Jump();
-            Gravity();
+            Gravity(gravityMultiplier);
 
             Vector3 moveDir = GetMoveDir();
 
@@ -133,25 +135,43 @@ namespace Cromede.Player
         }
 
         //중력 계산
-        private void Gravity()
+        private void Gravity(float gravityMultiplier = 1.0f)
         {
             if (characterController.isGrounded && verticalVelocity < 0.0f)
             {
                 verticalVelocity = -2.0f; //가만히 서있을땐 0.0f 이면 누르는 힘이 없어서 땅 판정이 불안정해서 isGrounded가 가끔 false남. 그래서 -2 값으로 강제로 눌러줌
             }
 
-            verticalVelocity += Physics.gravity.y * Time.deltaTime; //아래 방향 속도 증가
+            verticalVelocity += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
         }
 
         //점프
-        private void Jump()
+        public void Jump()
         {
-            if (!playerInput.IsJump) return;
-            if (!characterController.isGrounded) return; 
+            if (!characterController.isGrounded) return;
+
+            jumpStartVelocity = characterController.velocity;
+            jumpStartVelocity.y = 0.0f;
 
             verticalVelocity = jumpForce;
+
+            Debug.Log($"Jump Start Velocity : {jumpStartVelocity.magnitude}");
         }
 
+        public void VerticalMove()
+        {
+            Gravity();
+
+            Vector3 velocity = Vector3.up * verticalVelocity;
+            characterController.Move(velocity * Time.deltaTime);
+        }
+
+        public void JumpMove(bool rotateCharacter, Transform target = null)
+        {
+            float jumpMoveSpeed = jumpStartVelocity.sqrMagnitude > 0.001f ? jumpStartVelocity.magnitude : moveSpeed * airMoveSpeedRate;
+
+            MoveCharacter(jumpMoveSpeed, rotateCharacter, target, jumpGravity);
+        }
         //질주
 
         public void Sprint()

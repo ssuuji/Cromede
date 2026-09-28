@@ -11,6 +11,7 @@ namespace Cromede.Player.State
         public enum PlayerStateType
         {
             Move,
+            Jump,
             Dodge,
             Sprint,
             Attack,
@@ -50,6 +51,7 @@ namespace Cromede.Player.State
             states = new Dictionary<PlayerStateType, PlayerState>()
             {
                 { PlayerStateType.Move, new PlayerMoveState(this) },
+                { PlayerStateType.Jump, new PlayerJumpState(this) },
                 { PlayerStateType.Dodge, new PlayerDodgeState(this) },
                 { PlayerStateType.Sprint, new PlayerSprintState(this) },
                 { PlayerStateType.Attack, new PlayerAttackState(this) },
@@ -68,6 +70,7 @@ namespace Cromede.Player.State
         //    currentState?.Update();
         //}
 
+        //상태 전환
         public void ChangeState(PlayerStateType nextStateType)
         {
             currentState?.Exit();
@@ -75,6 +78,15 @@ namespace Cromede.Player.State
             currentState = states[nextStateType];
 
             currentState.Enter();
+        }
+
+        //점프 상태전환
+        public void ChangeJumpState(bool isSprintJump)
+        {
+            PlayerJumpState jumpState = (PlayerJumpState)states[PlayerStateType.Jump];
+            jumpState.SetSprintJump(isSprintJump);
+
+            ChangeState(PlayerStateType.Jump);
         }
 
         //테스트

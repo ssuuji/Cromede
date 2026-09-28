@@ -14,12 +14,22 @@ namespace Cromede.Player.State
 
         public override void Update()
         {
+            //점프
+            if (stateMachine.PlayerInput.IsJump && stateMachine.PlayerMovement.IsGrounded)
+            {
+                stateMachine.PlayerAnimation.SetSprintJump();
+                stateMachine.ChangeJumpState(true);
+                return;
+            }
+
+            //회피
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
                 stateMachine.ChangeState(PlayerStateType.Dodge);
                 return;
             }
-
+            
+            //이동
             if (stateMachine.PlayerInput.MoveAction.sqrMagnitude <= 0.001f)
             {
                 stateMachine.PlayerAnimation.SetSprintStop();

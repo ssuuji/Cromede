@@ -635,9 +635,12 @@ MonoBehaviour:
   mainCamera: {fileID: 330585546}
   moveSpeed: 5
   rotationSpeed: 450
-  jumpForce: 5.5
+  sprintSpeed: 8
+  jumpForce: 10.5
+  jumpGravity: 2
+  airMoveSpeedRate: 0.5
   dodgeDuration: 0.833
-  dodgeRootMotionScale: 1
+  dodgeMoveCancelTime: 0.35
   damageSlowDuration: 1
   damageSlowSpeedRate: 0.5
 --- !u!114 &429386304
