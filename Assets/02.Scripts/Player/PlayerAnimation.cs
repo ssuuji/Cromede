@@ -7,6 +7,7 @@ namespace Cromede.Player
         [SerializeField] private Animator animator;
         [SerializeField] private float moveDirDampTime = 0.1f;
         [SerializeField] private float cIdleDuration = 3.0f;
+        [SerializeField] private GameObject weapon;
 
         private float cIdleTimer;
         private bool isCIdleTimer;
@@ -201,6 +202,7 @@ namespace Cromede.Player
         public void SetCombat(bool isCombat)
         {
             animator.SetBool(IsCombatHash, isCombat);
+            weapon.SetActive(isCombat);
 
             if (isCombat)
             {

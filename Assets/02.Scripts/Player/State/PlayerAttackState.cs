@@ -14,7 +14,6 @@ namespace Cromede.Player.State
         public override void Enter()
         {
             comboIndex = 0;
-            stateMachine.PlayerAttack.SetWeaponActive(true);
             StartAttack();
         }
 
@@ -71,8 +70,6 @@ namespace Cromede.Player.State
 
         public override void Exit()
         {
-            stateMachine.PlayerAttack.SetWeaponActive(false);
-
             //공격 상태 종료 후 전투 대기 시간 시작
             stateMachine.PlayerAnimation.StartCIdleTimer();
         }
