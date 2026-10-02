@@ -12,7 +12,10 @@ namespace Cromede.Player
         private Coroutine burnCoroutine;
 
         public event Action OnDamaged;
-        
+        public event Action<Vector3> OnHit;
+        public event Action OnDied;
+        public event Action OnRebirth;
+
         private void Awake()
         {
             currentHealth = maxHealth;
@@ -32,12 +35,19 @@ namespace Cromede.Player
             OnDamaged?.Invoke();
         }
 
+        //방향정보 피격 DmgF,B,L,R
+        public void TakeDamage(int damage, Vector3 hitPosition)
+        {
+            TakeDamage(damage);
+            OnHit?.Invoke(hitPosition);
+        }
+
         //사망
         private void Die()
         {
             currentHealth = 0;
 
-            Debug.Log("플레이어 사망");
+            OnDied?.Invoke();
         }
 
         //화상데미지
@@ -67,17 +77,42 @@ namespace Cromede.Player
             burnCoroutine = null;
         }
 
+        //부활
+        public void Rebirth()
+        {
+            currentHealth = maxHealth;
+
+            Debug.Log($"플레이어 부활 : {currentHealth}/{maxHealth}");
+
+            OnRebirth?.Invoke();
+        }
+
+
         //테스트
         private void Update()
         {
+            //if (Keyboard.current.hKey.wasPressedThisFrame)
+            //{
+            //    TakeDamage(10);
+            //}
+
             if (Keyboard.current.hKey.wasPressedThisFrame)
             {
-                TakeDamage(10);
+                Vector3 hitPosition = transform.position + transform.forward * 2.0f; //F
+                //Vector3 hitPosition = transform.position - transform.forward * 2.0f; //B
+                //Vector3 hitPosition = transform.position + transform.right * 2.0f; //R
+                //Vector3 hitPosition = transform.position - transform.right * 2.0f; //L
+                TakeDamage(10, hitPosition);
             }
 
             if (Keyboard.current.lKey.wasPressedThisFrame)
             {
                 Burn(5, 5.0f, 1.0f);
+            }
+
+            if (Keyboard.current.rKey.wasPressedThisFrame)
+            {
+                Rebirth();
             }
         }
     }

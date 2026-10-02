@@ -6,7 +6,7 @@ namespace Cromede.Player
     public class PlayerAttack : MonoBehaviour
     {
         [Header("공격")]
-        [SerializeField] private float attackDuration = 0.5f;
+        [SerializeField] private float attackDuration = 2.333f;
         [SerializeField] private int attackDamage = 10;
 
         [Header("공격범위")]
@@ -15,10 +15,10 @@ namespace Cromede.Player
         [SerializeField] private LayerMask enemyLayer;
 
         [Header("콤보")]
-        [SerializeField] private int comboIndex;
-        [SerializeField] private bool nextAttack;
+        [SerializeField] private float comboInterval = 0.5f;
 
         public float AttackDuration => attackDuration;
+        public float ComboInterval => comboInterval;
 
         public void Attack()
         {
@@ -27,12 +27,14 @@ namespace Cromede.Player
             attackDir.Normalize();
 
             Collider[] targets = Physics.OverlapSphere(transform.position, attackRange, enemyLayer);
+
             foreach (Collider target in targets)
             {
                 Vector3 targetDir = target.transform.position - transform.position;
                 targetDir.y = 0.0f;
 
                 float angle = Vector3.Angle(attackDir, targetDir);
+
                 if (angle <= attackAngle)
                 {
                     EnemyHealth enemyHealth = target.GetComponent<EnemyHealth>();

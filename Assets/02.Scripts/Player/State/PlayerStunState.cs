@@ -13,7 +13,7 @@ namespace Cromede.Player.State
         {
             stunTimer = 0.0f;
 
-            Debug.Log("스턴 엔터");
+            stateMachine.PlayerAnimation.SetStun();
         }
 
         public override void Update()
@@ -27,7 +27,7 @@ namespace Cromede.Player.State
 
             stunTimer += Time.deltaTime;
 
-            if (stunTimer >= 1.0f)
+            if (stunTimer >= 2.0f)
             {
                 stateMachine.ChangeState(PlayerStateType.Move);
             }

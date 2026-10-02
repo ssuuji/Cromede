@@ -7,35 +7,45 @@ namespace Cromede.Player.State
     {
         public PlayerInteractState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
-        private float interfactTimer;
+        private float interactTimer;
+        private bool isInteractEnd;
 
         public override void Enter()
         {
-            interfactTimer = 0.0f;
+            interactTimer = 0.0f;
+            isInteractEnd = false;
 
-            Debug.Log("상호작용 엔터");
+            stateMachine.PlayerInteract.Interact();
+            stateMachine.PlayerAnimation.SetInteract();
         }
+
         public override void Update()
         {
+            interactTimer += Time.deltaTime;
+
             //상호작용중 움직이면 상호작용 취소
             if (stateMachine.PlayerInput.MoveAction.sqrMagnitude > 0.001f)
             {
-                Debug.Log("상호작용 취소");
+                stateMachine.PlayerAnimation.SetInteractCancel();
                 stateMachine.ChangeState(PlayerStateType.Move);
                 return;
             }
 
-            interfactTimer += Time.deltaTime;
+            //상호작용 종료
+            if (!isInteractEnd && interactTimer >= 3.0f)
+            {
+                isInteractEnd = true;
+                interactTimer = 0.0f;
 
-            if (interfactTimer >= 3.0f)
+                stateMachine.PlayerAnimation.SetInteractEnd();
+                return;
+            }
+
+            //종료 애니메이션 재생 후 이동 상태로 복귀
+            if (isInteractEnd && interactTimer >= 0.958f)
             {
                 stateMachine.ChangeState(PlayerStateType.Move);
             }
-        }
-
-        public override void Exit()
-        {
-            Debug.Log("상호작용 끗");
         }
     }
 }

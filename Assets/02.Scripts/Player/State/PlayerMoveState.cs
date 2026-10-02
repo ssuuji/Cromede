@@ -34,7 +34,7 @@ namespace Cromede.Player.State
             //상호작용
             if (stateMachine.PlayerInput.IsInteract)
             {
-                stateMachine.PlayerInteract.Interact();
+                stateMachine.ChangeState(PlayerStateType.Interact);
                 return;
             }
 
@@ -43,7 +43,7 @@ namespace Cromede.Player.State
 
             Transform currentTarget = stateMachine.PlayerTargeting.CurrentTarget;
 
-            if (currentTarget == null)
+            if (currentTarget == null && !stateMachine.PlayerAnimation.IsCombat)
             {
                 stateMachine.PlayerAnimation.SetMoveDir(0.0f, 1.0f);
             }
@@ -51,6 +51,7 @@ namespace Cromede.Player.State
             {
                 Vector3 moveDir = stateMachine.PlayerMovement.GetMoveDir();
                 Vector3 localMoveDir = stateMachine.transform.InverseTransformDirection(moveDir);
+
                 stateMachine.PlayerAnimation.SetMoveDir(localMoveDir.x, localMoveDir.z);
             }
 

@@ -6,6 +6,10 @@ namespace Cromede.Player
     {
         [SerializeField] private Animator animator;
         [SerializeField] private float moveDirDampTime = 0.1f;
+        [SerializeField] private float cIdleDuration = 3.0f;
+
+        private float cIdleTimer;
+        private bool isCIdleTimer;
 
         private static readonly int MoveMagnitudeHash = Animator.StringToHash("MoveMagnitude");
         private static readonly int MoveXHash = Animator.StringToHash("MoveX");
@@ -19,13 +23,41 @@ namespace Cromede.Player
         private static readonly int JumpLandHash = Animator.StringToHash("JumpLand");
         private static readonly int JumpLandRunHash = Animator.StringToHash("JumpLandRun");
         private static readonly int SprintJumpHash = Animator.StringToHash("SprintJump");
+        private static readonly int AttackHash = Animator.StringToHash("Attack");
+        private static readonly int IsCombatHash = Animator.StringToHash("IsCombat");
+        private static readonly int HitHash = Animator.StringToHash("Hit");
+        private static readonly int HitXHash = Animator.StringToHash("HitX");
+        private static readonly int HitYHash = Animator.StringToHash("HitY");
+        private static readonly int StunHash = Animator.StringToHash("Stun");
+        private static readonly int KnockDownHash = Animator.StringToHash("KnockDown");
+        private static readonly int KnockDownEndHash = Animator.StringToHash("KnockDownEnd");
+        private static readonly int DieHash = Animator.StringToHash("Die");
+        private static readonly int RebirthHash = Animator.StringToHash("Rebirth");
+        private static readonly int InteractHash = Animator.StringToHash("Interact");
+        private static readonly int InteractEndHash = Animator.StringToHash("InteractEnd");
+        private static readonly int InteractCancelHash = Animator.StringToHash("InteractCancel");
 
         private PlayerMovement playerMovement;
         private bool useRootMotion;
 
+        public bool IsCombat => animator.GetBool(IsCombatHash);
+
         private void Awake()
         {
             playerMovement = GetComponentInParent<PlayerMovement>();
+        }
+
+        private void Update()
+        {
+            if (!isCIdleTimer) return;
+
+            cIdleTimer += Time.deltaTime;
+
+            if (cIdleTimer >= cIdleDuration)
+            {
+                isCIdleTimer = false;
+                SetCombat(false);
+            }
         }
 
         #region 이동
@@ -161,6 +193,94 @@ namespace Cromede.Player
             animator.SetTrigger(SprintJumpHash);
         }
 
+        #endregion
+
+        #region 공격
+
+        //전투 자세 설정
+        public void SetCombat(bool isCombat)
+        {
+            animator.SetBool(IsCombatHash, isCombat);
+
+            if (isCombat)
+            {
+                cIdleTimer = 0.0f;
+                isCIdleTimer = false;
+            }
+        }
+
+        //공격
+        public void SetAttack()
+        {
+            animator.SetTrigger(AttackHash);
+        }
+
+        //전투 대기 시간 시작
+        public void StartCIdleTimer()
+        {
+            cIdleTimer = 0.0f;
+            isCIdleTimer = true;
+        }
+        #endregion
+
+        #region 피격
+        public void SetHit(float hitX, float hitY)
+        {
+            animator.SetFloat(HitXHash, hitX);
+            animator.SetFloat(HitYHash, hitY);
+            animator.SetTrigger(HitHash);
+        }
+        #endregion
+
+        #region 스턴
+        public void SetStun()
+        {
+            animator.SetTrigger(StunHash);
+        }
+        #endregion
+
+        #region 넉다운
+        public void SetKnockDown()
+        {
+            animator.SetTrigger(KnockDownHash);
+        }
+
+        public void SetKnockDownEnd()
+        {
+            animator.SetTrigger(KnockDownEndHash);
+        }
+
+        #endregion
+
+        #region 사망
+        public void SetDie()
+        {
+            animator.SetTrigger(DieHash);
+        }
+        #endregion
+
+        #region 부활
+        public void SetRebirth()
+        {
+            animator.SetTrigger(RebirthHash);
+        }
+        #endregion
+
+        #region 상호작용
+        public void SetInteract()
+        {
+            animator.SetTrigger(InteractHash);
+        }
+
+        public void SetInteractEnd()
+        {
+            animator.SetTrigger(InteractEndHash);
+        }
+
+        public void SetInteractCancel()
+        {
+            animator.SetTrigger(InteractCancelHash);
+        }
         #endregion
 
         #region 루트모션

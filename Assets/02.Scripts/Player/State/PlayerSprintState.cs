@@ -14,6 +14,13 @@ namespace Cromede.Player.State
 
         public override void Update()
         {
+            //공격
+            if (stateMachine.PlayerInput.IsAttack)
+            {
+                stateMachine.ChangeState(PlayerStateType.Attack);
+                return;
+            }
+
             //점프
             if (stateMachine.PlayerInput.IsJump && stateMachine.PlayerMovement.IsGrounded)
             {

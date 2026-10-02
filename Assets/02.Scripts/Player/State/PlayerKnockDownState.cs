@@ -8,10 +8,14 @@ namespace Cromede.Player.State
         public PlayerKnockDownState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
         private float knockDownTimer;
+        private bool isKnockDownEnd;
 
         public override void Enter()
         {
             knockDownTimer = 0.0f;
+            isKnockDownEnd = false;
+
+            stateMachine.PlayerAnimation.SetKnockDown();
         }
 
         public override void Update()
@@ -24,7 +28,16 @@ namespace Cromede.Player.State
 
             knockDownTimer += Time.deltaTime;
 
-            if (knockDownTimer >= 2.0f)
+            if (!isKnockDownEnd && knockDownTimer >= 2.0f)
+            {
+                isKnockDownEnd = true;
+                knockDownTimer = 0.0f;
+
+                stateMachine.PlayerAnimation.SetKnockDownEnd();
+                return;
+            }
+
+            if (isKnockDownEnd && knockDownTimer >= 1.375f)
             {
                 stateMachine.ChangeState(PlayerStateType.Move);
             }

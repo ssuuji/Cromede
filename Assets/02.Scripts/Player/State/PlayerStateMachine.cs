@@ -17,6 +17,8 @@ namespace Cromede.Player.State
             Attack,
             Stun,
             KnockDown,
+            Die,
+            Rebirth,
             Interact
         }
 
@@ -28,6 +30,7 @@ namespace Cromede.Player.State
         private PlayerAttack playerAttack;       //공격
         private PlayerInteract playerInteract;   //상호작용
         private PlayerAnimation playerAnimation; //애니메이션
+        private PlayerHealth playerHealth;       
         [SerializeField] private PlayerTargeting playerTargeting; //타겟팅 (카메라에 붙어있음)
 
 
@@ -45,6 +48,7 @@ namespace Cromede.Player.State
             playerMovement = GetComponent<PlayerMovement>();
             playerAttack = GetComponent<PlayerAttack>();
             playerInteract = GetComponent<PlayerInteract>();
+            playerHealth = GetComponent<PlayerHealth>();
             playerAnimation = GetComponentInChildren<PlayerAnimation>();
 
             //아래애들을 딕셔너리에 등록
@@ -57,12 +61,28 @@ namespace Cromede.Player.State
                 { PlayerStateType.Attack, new PlayerAttackState(this) },
                 { PlayerStateType.Stun, new PlayerStunState(this) },
                 { PlayerStateType.KnockDown, new PlayerKnockDownState(this) },
+                { PlayerStateType.Die, new PlayerDieState(this) },
+                { PlayerStateType.Rebirth, new PlayerRebirthState(this) },
                 { PlayerStateType.Interact, new PlayerInteractState(this) }
             };
         }
         private void Start()
         {
             ChangeState(PlayerStateType.Move); //처음은 이동상태로 설정
+        }
+
+        private void OnEnable()
+        {
+            playerHealth.OnHit += Hit;
+            playerHealth.OnDied += Die;
+            playerHealth.OnRebirth += Rebirth;
+        }
+
+        private void OnDisable()
+        {
+            playerHealth.OnHit -= Hit;
+            playerHealth.OnDied -= Die;
+            playerHealth.OnRebirth -= Rebirth;
         }
 
         //private void Update()
@@ -87,6 +107,31 @@ namespace Cromede.Player.State
             jumpState.SetSprintJump(isSprintJump);
 
             ChangeState(PlayerStateType.Jump);
+        }
+
+        //피격
+        private void Hit(Vector3 hitPosition)
+        {
+            if (currentState is not PlayerMoveState) return;
+
+            Vector3 hitDir = hitPosition - transform.position;
+            hitDir.y = 0.0f;
+            hitDir.Normalize();
+
+            Vector3 localHitDir = transform.InverseTransformDirection(hitDir);
+            playerAnimation.SetHit(localHitDir.x, localHitDir.z);
+        }
+
+        //사망
+        private void Die()
+        {
+            ChangeState(PlayerStateType.Die);
+        }
+
+        //부활
+        private void Rebirth()
+        {
+            ChangeState(PlayerStateType.Rebirth);
         }
 
         //테스트
