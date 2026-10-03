@@ -12,7 +12,6 @@ namespace Cromede.Player.State
             //점프
             if (stateMachine.PlayerInput.IsJump && stateMachine.PlayerMovement.IsGrounded)
             {
-                stateMachine.PlayerAnimation.SetJump();
                 stateMachine.ChangeJumpState(false);
                 return;
             }
@@ -27,6 +26,7 @@ namespace Cromede.Player.State
             //공격
             if (stateMachine.PlayerInput.IsAttack)
             {
+                stateMachine.PlayerAnimation.SetMoveMagnitude(stateMachine.PlayerInput.MoveAction.magnitude);
                 stateMachine.ChangeState(PlayerStateType.Attack);
                 return;
             }
@@ -34,7 +34,11 @@ namespace Cromede.Player.State
             //상호작용
             if (stateMachine.PlayerInput.IsInteract)
             {
-                stateMachine.ChangeState(PlayerStateType.Interact);
+                if (stateMachine.PlayerInteract.Interact())
+                {
+                    stateMachine.ChangeState(PlayerStateType.Interact);
+                }
+
                 return;
             }
 
@@ -43,7 +47,7 @@ namespace Cromede.Player.State
 
             Transform currentTarget = stateMachine.PlayerTargeting.CurrentTarget;
 
-            if (currentTarget == null && !stateMachine.PlayerAnimation.IsCombat)
+            if (currentTarget == null && !stateMachine.IsCombat)
             {
                 stateMachine.PlayerAnimation.SetMoveDir(0.0f, 1.0f);
             }

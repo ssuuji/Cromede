@@ -11,7 +11,14 @@ namespace Cromede.Player.State
 
         public override void Enter()
         {
-            Debug.Log($"Sprint Jump : {isSprintJump}");
+            if (isSprintJump)
+            {
+                stateMachine.PlayerAnimation.SetSprintJump();
+            }
+            else
+            {
+                stateMachine.PlayerAnimation.SetJump();
+            }
 
             stateMachine.PlayerMovement.Jump();
         }

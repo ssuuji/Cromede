@@ -20,6 +20,8 @@ namespace Cromede.Player.State
 
         public override void Update()
         {
+            stateMachine.PlayerMovement.VerticalMove();
+
             if (stateMachine.PlayerInput.IsSprint && stateMachine.PlayerMovement.IsGrounded)
             {
                 stateMachine.ChangeState(PlayerStateType.Dodge);
@@ -31,16 +33,16 @@ namespace Cromede.Player.State
             if (!isKnockDownEnd && knockDownTimer >= 2.0f)
             {
                 isKnockDownEnd = true;
-                knockDownTimer = 0.0f;
 
                 stateMachine.PlayerAnimation.SetKnockDownEnd();
-                return;
             }
+        }
 
-            if (isKnockDownEnd && knockDownTimer >= 1.375f)
-            {
-                stateMachine.ChangeState(PlayerStateType.Move);
-            }
+        public override void OnAnimationEnd()
+        {
+            if (!isKnockDownEnd) return;
+
+            stateMachine.ChangeState(PlayerStateType.Move);
         }
     }
 }

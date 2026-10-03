@@ -23,6 +23,7 @@ namespace Cromede.Input
         public Vector2 LookAction => lookAction.ReadValue<Vector2>();
         public bool IsJump => jumpAction.WasPressedThisFrame();
         public bool IsAttack => attackAction.WasPressedThisFrame();
+        public bool IsAttackHeld => attackAction.IsPressed();
         public bool IsSecondaryAttack => secondaryAttackAction.WasPressedThisFrame();
         public bool IsSprint => sprintAction.WasPressedThisFrame();
         public bool IsTargetChange => targetChangeAction.WasPressedThisFrame();

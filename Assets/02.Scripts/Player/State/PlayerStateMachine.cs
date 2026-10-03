@@ -7,7 +7,6 @@ namespace Cromede.Player.State
 {
     public class PlayerStateMachine : MonoBehaviour
     {
-        
         public enum PlayerStateType
         {
             Move,
@@ -30,8 +29,17 @@ namespace Cromede.Player.State
         private PlayerAttack playerAttack;       //공격
         private PlayerInteract playerInteract;   //상호작용
         private PlayerAnimation playerAnimation; //애니메이션
-        private PlayerHealth playerHealth;       
+        private PlayerHealth playerHealth;
         [SerializeField] private PlayerTargeting playerTargeting; //타겟팅 (카메라에 붙어있음)
+
+        [Header("전투")]
+        [SerializeField] private float cIdleDuration = 3.0f;
+
+        private float cIdleTimer;
+        private bool isCIdleTimer;
+        private bool isCombat;
+
+        public bool IsCombat => isCombat;
 
 
         public PlayerInputSystem PlayerInput => playerInput;
@@ -76,6 +84,8 @@ namespace Cromede.Player.State
             playerHealth.OnHit += Hit;
             playerHealth.OnDied += Die;
             playerHealth.OnRebirth += Rebirth;
+
+            playerAnimation.OnAnimationEnd += AnimationEnd;
         }
 
         private void OnDisable()
@@ -83,12 +93,43 @@ namespace Cromede.Player.State
             playerHealth.OnHit -= Hit;
             playerHealth.OnDied -= Die;
             playerHealth.OnRebirth -= Rebirth;
+
+            playerAnimation.OnAnimationEnd -= AnimationEnd;
         }
 
-        //private void Update()
-        //{
-        //    currentState?.Update();
-        //}
+        private void Update()
+        {
+            if (isCIdleTimer)
+            {
+                cIdleTimer += Time.deltaTime;
+
+                if (cIdleTimer >= cIdleDuration)
+                {
+                    ExitCombat();
+                }
+            }
+
+            if (currentState is not PlayerDieState && currentState is not PlayerRebirthState)
+            {
+                if (Keyboard.current.jKey.wasPressedThisFrame)
+                {
+                    ChangeState(PlayerStateType.Stun);
+                }
+
+                if (Keyboard.current.kKey.wasPressedThisFrame)
+                {
+                    ChangeState(PlayerStateType.KnockDown);
+                }
+            }
+
+            currentState?.Update();
+        }
+
+        //애니메이션 종료
+        private void AnimationEnd()
+        {
+            currentState?.OnAnimationEnd();
+        }
 
         //상태 전환
         public void ChangeState(PlayerStateType nextStateType)
@@ -109,6 +150,33 @@ namespace Cromede.Player.State
             ChangeState(PlayerStateType.Jump);
         }
 
+        //전투 상태 진입
+        public void EnterCombat()
+        {
+            isCombat = true;
+            cIdleTimer = 0.0f;
+            isCIdleTimer = false;
+
+            playerAnimation.SetCombat(true);
+        }
+
+        //전투 상태 종료
+        public void ExitCombat()
+        {
+            isCombat = false;
+            cIdleTimer = 0.0f;
+            isCIdleTimer = false;
+
+            playerAnimation.SetCombat(false);
+        }
+
+        //전투 대기 시간 시작
+        public void StartCIdleTimer()
+        {
+            cIdleTimer = 0.0f;
+            isCIdleTimer = true;
+        }
+
         //피격
         private void Hit(Vector3 hitPosition)
         {
@@ -126,28 +194,13 @@ namespace Cromede.Player.State
         private void Die()
         {
             ChangeState(PlayerStateType.Die);
+            ExitCombat();
         }
 
         //부활
         private void Rebirth()
         {
             ChangeState(PlayerStateType.Rebirth);
-        }
-
-        //테스트
-        private void Update()
-        {
-            if (Keyboard.current.jKey.wasPressedThisFrame)
-            {
-                ChangeState(PlayerStateType.Stun);
-            }
-
-            if (Keyboard.current.kKey.wasPressedThisFrame)
-            {
-                ChangeState(PlayerStateType.KnockDown);
-            }
-
-            currentState?.Update();
         }
     }
 }

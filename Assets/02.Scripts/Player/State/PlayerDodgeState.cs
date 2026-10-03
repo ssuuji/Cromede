@@ -35,23 +35,30 @@ namespace Cromede.Player.State
             
             dodgeTimer += Time.deltaTime;
 
-            // 이동 입력이 있으면 Recovery 구간 전에 바로 달리기로 복귀
+            //이동 입력이 있으면 Recovery 구간 전에 이동으로 복귀
             if (moveMagnitude > 0.1f && dodgeTimer >= stateMachine.PlayerMovement.DodgeMoveCancelTime)
             {
-                stateMachine.ChangeState(PlayerStateType.Sprint);
-                return;
-            }
+                if (stateMachine.IsCombat)
+                {
+                    stateMachine.ChangeState(PlayerStateType.Move);
+                }
+                else
+                {
+                    stateMachine.ChangeState(PlayerStateType.Sprint);
+                }
 
-            // 이동 입력이 없으면 Dodge 전체 재생
-            if (dodgeTimer >= stateMachine.PlayerMovement.DodgeDuration)
-            {
-                stateMachine.ChangeState(PlayerStateType.Move);
+                return;
             }
         }
 
         public override void Exit()
         {
             stateMachine.PlayerAnimation.SetRootMotion(false);
+        }
+
+        public override void OnAnimationEnd()
+        {
+            stateMachine.ChangeState(PlayerStateType.Move);
         }
     }
 }

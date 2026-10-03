@@ -24,12 +24,16 @@ namespace Cromede.Player
         //피격
         public void TakeDamage(int damage)
         {
+            if (currentHealth <= 0) return;
+
             currentHealth -= damage;
 
             Debug.Log($"{damage} : 플레이어 체력 {currentHealth}/{maxHealth}");
+
             if (currentHealth <= 0)
             {
                 Die();
+                return;
             }
 
             OnDamaged?.Invoke();
@@ -38,7 +42,12 @@ namespace Cromede.Player
         //방향정보 피격 DmgF,B,L,R
         public void TakeDamage(int damage, Vector3 hitPosition)
         {
+            if (currentHealth <= 0) return;
+
             TakeDamage(damage);
+
+            if (currentHealth <= 0) return;
+
             OnHit?.Invoke(hitPosition);
         }
 
@@ -47,12 +56,20 @@ namespace Cromede.Player
         {
             currentHealth = 0;
 
+            if (burnCoroutine != null)
+            {
+                StopCoroutine(burnCoroutine);
+                burnCoroutine = null;
+            }
+
             OnDied?.Invoke();
         }
 
         //화상데미지
         public void Burn(int damage, float duration, float damageInterval)
         {
+            if (currentHealth <= 0) return;
+
             if (burnCoroutine != null)
             {
                 StopCoroutine(burnCoroutine);
@@ -80,6 +97,8 @@ namespace Cromede.Player
         //부활
         public void Rebirth()
         {
+            if (currentHealth > 0) return;
+
             currentHealth = maxHealth;
 
             Debug.Log($"플레이어 부활 : {currentHealth}/{maxHealth}");

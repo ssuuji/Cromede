@@ -1,6 +1,5 @@
 ﻿using Cromede.Input;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 namespace Cromede.Player
 {
@@ -22,7 +21,6 @@ namespace Cromede.Player
         [SerializeField] private float airMoveSpeedRate = 0.5f;       //공중에서 앞으로가는 속도
 
         [Header("회피")]
-        [SerializeField] private float dodgeDuration = 0.833f;      //회피 유지시간
         [SerializeField] private float dodgeMoveCancelTime = 0.35f;
 
         [Header("피격")]
@@ -39,7 +37,6 @@ namespace Cromede.Player
         private Vector3 jumpStartVelocity;
 
         public bool IsGrounded => characterController.isGrounded;
-        public float DodgeDuration => dodgeDuration;
         public float DodgeMoveCancelTime => dodgeMoveCancelTime;
 
 
@@ -154,8 +151,6 @@ namespace Cromede.Player
             jumpStartVelocity.y = 0.0f;
 
             verticalVelocity = jumpForce;
-
-            Debug.Log($"Jump Start Velocity : {jumpStartVelocity.magnitude}");
         }
 
         public void VerticalMove()

@@ -22,7 +22,6 @@ namespace Cromede.Player.State
             //공격 중 점프
             if (stateMachine.PlayerInput.IsJump && stateMachine.PlayerMovement.IsGrounded)
             {
-                stateMachine.PlayerAnimation.SetJump();
                 stateMachine.ChangeJumpState(false);
                 return;
             }
@@ -54,24 +53,31 @@ namespace Cromede.Player.State
             }
 
             //콤보 입력이 있고 콤보 전환 시간이 지나면 다음 공격
-            if (nextAttack && comboIndex < 3 && attackTimer >= stateMachine.PlayerAttack.ComboInterval)
+            if ((nextAttack || stateMachine.PlayerInput.IsAttackHeld) && attackTimer >= stateMachine.PlayerAttack.ComboInterval)
             {
-                comboIndex++;
+                if (comboIndex < 2)
+                {
+                    comboIndex++;
+                }
+                else
+                {
+                    comboIndex = 0;
+                }
+
                 StartAttack();
                 return;
-            }
-
-            //추가 공격이 없으면 현재 공격 애니메이션 종료 후 이동 상태로 복귀
-            if (attackTimer >= stateMachine.PlayerAttack.AttackDuration)
-            {
-                stateMachine.ChangeState(PlayerStateType.Move);
             }
         }
 
         public override void Exit()
         {
             //공격 상태 종료 후 전투 대기 시간 시작
-            stateMachine.PlayerAnimation.StartCIdleTimer();
+            stateMachine.StartCIdleTimer();
+        }
+
+        public override void OnAnimationEnd()
+        {
+            stateMachine.ChangeState(PlayerStateType.Move);
         }
 
         //공격
@@ -80,11 +86,9 @@ namespace Cromede.Player.State
             attackTimer = 0.0f;
             nextAttack = false;
 
-            stateMachine.PlayerAnimation.SetCombat(true);
+            stateMachine.EnterCombat();
             stateMachine.PlayerAnimation.SetAttack();
             stateMachine.PlayerAttack.Attack();
-
-            Debug.Log($"comboIndex : {comboIndex}");
         }
     }
 

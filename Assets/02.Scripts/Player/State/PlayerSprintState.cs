@@ -11,12 +11,12 @@ namespace Cromede.Player.State
             stateMachine.PlayerAnimation.SetSprint();
         }
 
-
         public override void Update()
         {
             //공격
             if (stateMachine.PlayerInput.IsAttack)
             {
+                stateMachine.PlayerAnimation.SetMoveMagnitude(stateMachine.PlayerInput.MoveAction.magnitude);
                 stateMachine.ChangeState(PlayerStateType.Attack);
                 return;
             }
@@ -24,7 +24,6 @@ namespace Cromede.Player.State
             //점프
             if (stateMachine.PlayerInput.IsJump && stateMachine.PlayerMovement.IsGrounded)
             {
-                stateMachine.PlayerAnimation.SetSprintJump();
                 stateMachine.ChangeJumpState(true);
                 return;
             }

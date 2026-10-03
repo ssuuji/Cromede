@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Cromede.Player
 {
@@ -6,11 +7,7 @@ namespace Cromede.Player
     {
         [SerializeField] private Animator animator;
         [SerializeField] private float moveDirDampTime = 0.1f;
-        [SerializeField] private float cIdleDuration = 3.0f;
         [SerializeField] private GameObject weapon;
-
-        private float cIdleTimer;
-        private bool isCIdleTimer;
 
         private static readonly int MoveMagnitudeHash = Animator.StringToHash("MoveMagnitude");
         private static readonly int MoveXHash = Animator.StringToHash("MoveX");
@@ -40,25 +37,23 @@ namespace Cromede.Player
 
         private PlayerMovement playerMovement;
         private bool useRootMotion;
-
-        public bool IsCombat => animator.GetBool(IsCombatHash);
+        public event Action OnAnimationEnd;
+        private Vector3 weaponPos;
+        private Quaternion weaponRotation;
+        private bool weaponStun;
 
         private void Awake()
         {
             playerMovement = GetComponentInParent<PlayerMovement>();
+
+            weaponPos = weapon.transform.localPosition;
+            weaponRotation = weapon.transform.localRotation;
         }
 
-        private void Update()
+        //애니메이션 종료
+        public void AnimationEnd()
         {
-            if (!isCIdleTimer) return;
-
-            cIdleTimer += Time.deltaTime;
-
-            if (cIdleTimer >= cIdleDuration)
-            {
-                isCIdleTimer = false;
-                SetCombat(false);
-            }
+            OnAnimationEnd?.Invoke();
         }
 
         #region 이동
@@ -203,12 +198,6 @@ namespace Cromede.Player
         {
             animator.SetBool(IsCombatHash, isCombat);
             weapon.SetActive(isCombat);
-
-            if (isCombat)
-            {
-                cIdleTimer = 0.0f;
-                isCIdleTimer = false;
-            }
         }
 
         //공격
@@ -217,12 +206,6 @@ namespace Cromede.Player
             animator.SetTrigger(AttackHash);
         }
 
-        //전투 대기 시간 시작
-        public void StartCIdleTimer()
-        {
-            cIdleTimer = 0.0f;
-            isCIdleTimer = true;
-        }
         #endregion
 
         #region 피격
@@ -238,6 +221,24 @@ namespace Cromede.Player
         public void SetStun()
         {
             animator.SetTrigger(StunHash);
+        }
+
+        //스턴 무기 설정
+        public void SetStunWeapon()
+        {
+            weaponStun = weapon.activeSelf;
+
+            weapon.SetActive(true);
+            weapon.transform.localPosition = new Vector3(-0.00026f, -0.00166f, -0.00023f);
+            weapon.transform.localRotation = Quaternion.Euler(180.0f, 0.0f, -104.01f);
+        }
+
+        //스턴 무기 원복
+        public void ResetStunWeapon()
+        {
+            weapon.transform.localPosition = weaponPos;
+            weapon.transform.localRotation = weaponRotation;
+            weapon.SetActive(weaponStun);
         }
         #endregion
 

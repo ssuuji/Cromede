@@ -6,7 +6,6 @@ namespace Cromede.Player
     public class PlayerAttack : MonoBehaviour
     {
         [Header("공격")]
-        [SerializeField] private float attackDuration = 2.333f;
         [SerializeField] private int attackDamage = 10;
 
         [Header("공격범위")]
@@ -17,7 +16,6 @@ namespace Cromede.Player
         [Header("콤보")]
         [SerializeField] private float comboInterval = 0.5f;
 
-        public float AttackDuration => attackDuration;
         public float ComboInterval => comboInterval;
 
         public void Attack()

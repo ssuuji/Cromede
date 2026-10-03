@@ -15,7 +15,6 @@ namespace Cromede.Player.State
             interactTimer = 0.0f;
             isInteractEnd = false;
 
-            stateMachine.PlayerInteract.Interact();
             stateMachine.PlayerAnimation.SetInteract();
         }
 
@@ -35,17 +34,15 @@ namespace Cromede.Player.State
             if (!isInteractEnd && interactTimer >= 3.0f)
             {
                 isInteractEnd = true;
-                interactTimer = 0.0f;
-
                 stateMachine.PlayerAnimation.SetInteractEnd();
-                return;
             }
+        }
 
-            //종료 애니메이션 재생 후 이동 상태로 복귀
-            if (isInteractEnd && interactTimer >= 0.958f)
-            {
-                stateMachine.ChangeState(PlayerStateType.Move);
-            }
+        public override void OnAnimationEnd()
+        {
+            if (!isInteractEnd) return;
+
+            stateMachine.ChangeState(PlayerStateType.Move);
         }
     }
 }
