@@ -7,73 +7,69 @@ namespace Cromede.Enemy.State
     {
         public enum EnemyStateType
         {
-            Dormant,
-            Wake,
-            Idle,
-            Chase,
-            Attack,
-            Hit,
-            Return,
-            Die
+            Dormant, //석상
+            Wake,    //깨어남
+            Idle,    //대기
+            Chase,   //추적
+            Attack,  //공격
+            Hit,     //피격
+            Return,  //복귀
+            Die      //사망
         }
 
         public enum EnemyStartType
         {
-            Normal,
-            Dormant
+            Normal,   //기본
+            Dormant   //석상
         }
 
         public enum EnemyIdleType
         {
-            Stay,
-            Wander
+            Stay,     //제자리 대기
+            Wander    //주변 돌아다님
         }
 
         [Header("타겟")]
         [SerializeField] private Transform target;
 
-        [Header("시작")]
+        [Header("시작상태")]
         [SerializeField] private EnemyStartType startType = EnemyStartType.Normal;
 
         [Header("감지")]
         [SerializeField] private float detectionRange = 6.0f;
         [SerializeField] private float returnRange = 20.0f;
 
-        [Header("비전투")]
+        [Header("대기방식")]
         [SerializeField] private EnemyIdleType idleType = EnemyIdleType.Stay;
         [SerializeField] private float wanderRadius = 4.0f;
         [SerializeField] private float wanderWaitTime = 2.0f;
 
+
         private Dictionary<EnemyStateType, EnemyState> states;
         private EnemyState currentState;
-
         private EnemyMovement enemyMovement;
         private EnemyAnimation enemyAnimation;
         private EnemyAttack enemyAttack;
         private EnemyHealth enemyHealth;
         private Collider enemyCollider;
-
         private Vector3 spawnPosition;
         private bool isCombat;
 
-        public Transform Target => target;
 
+        public Transform Target => target;
         public EnemyMovement EnemyMovement => enemyMovement;
         public EnemyAnimation EnemyAnimation => enemyAnimation;
         public EnemyAttack EnemyAttack => enemyAttack;
-
         public EnemyStartType StartType => startType;
         public EnemyIdleType IdleType => idleType;
-
         public Vector3 SpawnPosition => spawnPosition;
-
         public float DetectionRange => detectionRange;
         public float ReturnRange => returnRange;
         public float WanderRadius => wanderRadius;
         public float WanderWaitTime => wanderWaitTime;
-
         public bool HasTarget => target != null;
 
+        //몬스터와 플레이어 사이 거리
         public float TargetDistance
         {
             get
@@ -87,7 +83,9 @@ namespace Cromede.Enemy.State
             }
         }
 
+        //몬스터와 시작 위치 사이 거리
         public float SpawnDistance => Vector3.Distance(transform.position, spawnPosition);
+
 
         private void Awake()
         {
@@ -97,7 +95,7 @@ namespace Cromede.Enemy.State
             enemyHealth = GetComponent<EnemyHealth>();
             enemyCollider = GetComponent<Collider>();
 
-            spawnPosition = transform.position;
+            spawnPosition = transform.position; //스폰위치 저장
 
             states = new Dictionary<EnemyStateType, EnemyState>()
             {
@@ -125,7 +123,7 @@ namespace Cromede.Enemy.State
 
         private void OnEnable()
         {
-            enemyHealth.OnDamaged += Damaged;
+            enemyHealth.OnDamaged += Hit;
             enemyHealth.OnDied += Die;
 
             enemyAnimation.OnAnimationEnd += AnimationEnd;
@@ -133,7 +131,7 @@ namespace Cromede.Enemy.State
 
         private void OnDisable()
         {
-            enemyHealth.OnDamaged -= Damaged;
+            enemyHealth.OnDamaged -= Hit;
             enemyHealth.OnDied -= Die;
 
             enemyAnimation.OnAnimationEnd -= AnimationEnd;
@@ -154,6 +152,8 @@ namespace Cromede.Enemy.State
 
             currentState.Enter();
         }
+
+        #region 전투
 
         public void EnterCombat()
         {
@@ -177,7 +177,10 @@ namespace Cromede.Enemy.State
             enemyAnimation.SetCombat(false);
         }
 
-        private void Damaged()
+        #endregion
+
+        #region 피격
+        private void Hit()
         {
             if (currentState is EnemyDieState)
             {
@@ -198,17 +201,21 @@ namespace Cromede.Enemy.State
 
             ChangeState(EnemyStateType.Hit);
         }
+        #endregion
 
+        #region 사망
         private void Die()
         {
             ChangeState(EnemyStateType.Die);
         }
+        #endregion
 
         private void AnimationEnd()
         {
             currentState?.OnAnimationEnd();
         }
 
+        //몬스터 충돌 판정 활성화/비활성화
         public void SetCollider(bool isEnabled)
         {
             if (enemyCollider != null)

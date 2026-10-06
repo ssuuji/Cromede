@@ -10,7 +10,7 @@
         }
 
         public virtual void Enter() { }
-        public abstract void Update();
+        public virtual void Update() { }
         public virtual void Exit() { }
         public virtual void OnAnimationEnd() { }
     }

@@ -22,44 +22,76 @@ namespace Cromede.Enemy
             animator = GetComponent<Animator>();
         }
 
-        public void AnimationEnd()
-        {
-            OnAnimationEnd?.Invoke();
-        }
+        #region 이동
 
+        //이동 속도값 설정
         public void SetMoveMagnitude(float moveMagnitude)
         {
             animator.SetFloat(MoveMagnitudeHash, moveMagnitude);
         }
 
+        #endregion
+
+        #region 전투
+
+        //전투상태 설정
         public void SetCombat(bool isCombat)
         {
             animator.SetBool(IsCombatHash, isCombat);
         }
 
+        #endregion
+
+        #region 석상
+
+        //석상상태 
         public void SetDormant()
         {
             animator.SetTrigger(DormantHash);
         }
 
+        //깨어남 
         public void SetWake()
         {
             animator.SetTrigger(WakeHash);
         }
 
+        #endregion
+
+        #region 공격
+
+        //공격
         public void SetAttack()
         {
             animator.SetTrigger(AttackHash);
         }
 
+        #endregion
+
+        #region 피격
+
+        //피격 
         public void SetHit()
         {
             animator.SetTrigger(HitHash);
         }
 
+        #endregion
+
+        #region 사망
+
+        //사망
         public void SetDie()
         {
             animator.SetTrigger(DieHash);
+        }
+
+        #endregion
+
+        //애니메이션 종료
+        public void AnimationEnd()
+        {
+            OnAnimationEnd?.Invoke();
         }
     }
 }
