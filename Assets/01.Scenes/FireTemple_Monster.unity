@@ -645,24 +645,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 69768426}
     - target: {fileID: 7856299506300754628, guid: b603f79f0f5104747a46fadf22613e08, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856299506300754628, guid: b603f79f0f5104747a46fadf22613e08, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856299506300754628, guid: b603f79f0f5104747a46fadf22613e08, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856299506300754628, guid: b603f79f0f5104747a46fadf22613e08, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.705566
       objectReference: {fileID: 0}
     - target: {fileID: 7856299506300754628, guid: b603f79f0f5104747a46fadf22613e08, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.7
+      value: -4.166
       objectReference: {fileID: 0}
     - target: {fileID: 7856299506300754628, guid: b603f79f0f5104747a46fadf22613e08, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5175,11 +5163,17 @@ PrefabInstance:
       insertIndex: 3
       addedObject: {fileID: 1186845686}
     - targetCorrespondingSourceObject: {fileID: 5085058761718122987, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
-      insertIndex: -1
+      insertIndex: 4
+      addedObject: {fileID: 1186845698}
+    - targetCorrespondingSourceObject: {fileID: 5085058761718122987, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      insertIndex: 5
       addedObject: {fileID: 1186845687}
     - targetCorrespondingSourceObject: {fileID: 5085058761718122987, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
-      insertIndex: -1
+      insertIndex: 6
       addedObject: {fileID: 1186845692}
+    - targetCorrespondingSourceObject: {fileID: 5085058761718122987, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 1186845697}
   m_SourcePrefab: {fileID: 100100000, guid: 4527481ddee61744bb8b6c29d60134dd, type: 3}
 --- !u!1 &1186845685 stripped
 GameObject:
@@ -5220,10 +5214,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fc18c76377b28e408c430df8dd2fd6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cromede.Enemy.EnemyMovement
-  target: {fileID: 714536969}
-  detectionRange: 6
-  returnRange: 20
-  attackRange: 3
+  walkSpeed: 1.5
+  runSpeed: 3.5
 --- !u!114 &1186845692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5236,6 +5228,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78098954ee684e74685bfef036fe18c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cromede.Enemy.EnemyAnimation
+--- !u!114 &1186845697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186845685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d2518debf9d4d44a9fbda3dd0bbcb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cromede.Enemy.EnemyAttack
+  attackDamage: 10
+  attackCount: 2
+  comboInterval: 0.75
+  attackCooldown: 1
+  attackRange: 3
+  attackAngle: 45
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &1186845698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186845685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f6422fdb48b69419d84ffe01f1d6a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStateMachine
+  target: {fileID: 714536969}
+  startType: 0
+  detectionRange: 6
+  returnRange: 20
+  idleType: 0
+  wanderRadius: 4
+  wanderWaitTime: 2
 --- !u!1 &1191971199 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7490545206086291268, guid: 48cb03e8e3b3fa7479afb1bb0f7422ff, type: 3}
@@ -7710,6 +7742,171 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4970780256165300939, guid: 5ef3e44a8eb92854ba96be1cd4cd85a8, type: 3}
+--- !u!1001 &1850421263
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 20.060364
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -61.61542
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8383075684788435460, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      propertyPath: m_Name
+      value: MOB_Gargoyle_01
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 1850421269}
+    - targetCorrespondingSourceObject: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 1850421268}
+    - targetCorrespondingSourceObject: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      insertIndex: 5
+      addedObject: {fileID: 1850421267}
+    - targetCorrespondingSourceObject: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      insertIndex: 6
+      addedObject: {fileID: 1850421266}
+    - targetCorrespondingSourceObject: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+      insertIndex: 7
+      addedObject: {fileID: 1850421265}
+  m_SourcePrefab: {fileID: 100100000, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+--- !u!1 &1850421264 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9159611666390261950, guid: 8a30af9829753634abf44db9a374ab98, type: 3}
+  m_PrefabInstance: {fileID: 1850421263}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1850421265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850421264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1d2518debf9d4d44a9fbda3dd0bbcb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cromede.Enemy.EnemyAttack
+  attackDamage: 10
+  attackCount: 1
+  comboInterval: 0.5
+  attackCooldown: 1
+  attackRange: 3
+  attackAngle: 45
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &1850421266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850421264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78098954ee684e74685bfef036fe18c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cromede.Enemy.EnemyAnimation
+--- !u!114 &1850421267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850421264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fc18c76377b28e408c430df8dd2fd6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cromede.Enemy.EnemyMovement
+  walkSpeed: 1.5
+  runSpeed: 3.5
+--- !u!114 &1850421268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850421264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f6422fdb48b69419d84ffe01f1d6a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cromede.Enemy.State.EnemyStateMachine
+  target: {fileID: 714536969}
+  startType: 1
+  detectionRange: 6
+  returnRange: 20
+  idleType: 0
+  wanderRadius: 4
+  wanderWaitTime: 2
+--- !u!195 &1850421269
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850421264}
+  m_Enabled: 1
+  m_AgentTypeID: -1372625422
+  m_Radius: 0.74
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 1.7
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2.58
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &1855569683 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7510985075604883760, guid: 48cb03e8e3b3fa7479afb1bb0f7422ff, type: 3}
@@ -10009,3 +10206,4 @@ SceneRoots:
   - {fileID: 140867469}
   - {fileID: 626074712}
   - {fileID: 1086095664}
+  - {fileID: 1850421263}
