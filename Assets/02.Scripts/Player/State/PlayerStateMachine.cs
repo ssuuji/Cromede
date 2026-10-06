@@ -30,6 +30,7 @@ namespace Cromede.Player.State
         private PlayerInteract playerInteract;   //상호작용
         private PlayerAnimation playerAnimation; //애니메이션
         private PlayerHealth playerHealth;
+        [Header("카메라")]
         [SerializeField] private PlayerTargeting playerTargeting; //타겟팅 (카메라에 붙어있음)
 
         [Header("전투")]
