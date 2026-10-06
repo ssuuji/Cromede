@@ -7,14 +7,15 @@ namespace Cromede.Player.State
     {
         public PlayerInteractState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
-        private float interactTimer;
-        private bool isInteractEnd;
+        private float interactTimer; 
+        private bool isInteractEnd;  
 
         public override void Enter()
         {
             interactTimer = 0.0f;
             isInteractEnd = false;
 
+            //상호작용 시작 애니메이션 재생
             stateMachine.PlayerAnimation.SetInteract();
         }
 
@@ -22,7 +23,7 @@ namespace Cromede.Player.State
         {
             interactTimer += Time.deltaTime;
 
-            //상호작용중 움직이면 상호작용 취소
+            //상호작용 중 움직이면 상호작용 취소
             if (stateMachine.PlayerInput.MoveAction.sqrMagnitude > 0.001f)
             {
                 stateMachine.PlayerAnimation.SetInteractCancel();
@@ -30,7 +31,7 @@ namespace Cromede.Player.State
                 return;
             }
 
-            //상호작용 종료
+            //3초 지나면 상호작용 종료 애니메이션 재생
             if (!isInteractEnd && interactTimer >= 3.0f)
             {
                 isInteractEnd = true;
@@ -40,7 +41,11 @@ namespace Cromede.Player.State
 
         public override void OnAnimationEnd()
         {
-            if (!isInteractEnd) return;
+            //상호작용 종료 애니메이션이 끝난 경우에만 이동 상태로 복귀
+            if (!isInteractEnd)
+            {
+                return;
+            }
 
             stateMachine.ChangeState(PlayerStateType.Move);
         }

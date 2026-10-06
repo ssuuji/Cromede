@@ -7,26 +7,31 @@ namespace Cromede.Player.State
     {
         public PlayerJumpState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
-        private bool isSprintJump;
+        private bool isSprintJump; //질주 중 시작한 점프인지 여부
 
         public override void Enter()
         {
+            //질주 점프면 질주 점프 애니메이션 재생
             if (isSprintJump)
             {
                 stateMachine.PlayerAnimation.SetSprintJump();
             }
             else
             {
+                //일반 점프 애니메이션 재생
                 stateMachine.PlayerAnimation.SetJump();
             }
 
+            //점프 실행
             stateMachine.PlayerMovement.Jump();
         }
 
         public override void Update()
         {
+            //현재 타겟 가져오기
             Transform currentTarget = stateMachine.PlayerTargeting.CurrentTarget;
 
+            //공중 이동 처리
             stateMachine.PlayerMovement.JumpMove(true, currentTarget);
 
             //착지
@@ -59,6 +64,7 @@ namespace Cromede.Player.State
 
         public override void Exit()
         {
+            //다음 점프를 위해 질주 점프 여부 초기화
             isSprintJump = false;
         }
 

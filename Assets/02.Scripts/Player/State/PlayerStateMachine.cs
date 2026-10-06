@@ -9,40 +9,39 @@ namespace Cromede.Player.State
     {
         public enum PlayerStateType
         {
-            Move,
-            Jump,
-            Dodge,
-            Sprint,
-            Attack,
-            Stun,
-            KnockDown,
-            Die,
-            Rebirth,
-            Interact
+            Move,       //이동
+            Jump,       //점프
+            Dodge,      //회피
+            Sprint,     //달리기
+            Attack,     //공격
+            Stun,       //기절
+            KnockDown,  //넉다운
+            Die,        //사망
+            Rebirth,    //부활
+            Interact    //상호작용
         }
 
         private Dictionary<PlayerStateType, PlayerState> states;
-        private PlayerState currentState;      //현재 플레이어 상태 
+        private PlayerState currentState; //현재 플레이어 상태
 
-        private PlayerInputSystem playerInput;   //인풋시스템
+        private PlayerInputSystem playerInput;   //입력
         private PlayerMovement playerMovement;   //이동
         private PlayerAttack playerAttack;       //공격
         private PlayerInteract playerInteract;   //상호작용
         private PlayerAnimation playerAnimation; //애니메이션
-        private PlayerHealth playerHealth;
+        private PlayerHealth playerHealth;       //체력
+
         [Header("카메라")]
         [SerializeField] private PlayerTargeting playerTargeting; //타겟팅 (카메라에 붙어있음)
 
         [Header("전투")]
-        [SerializeField] private float cIdleDuration = 3.0f;
+        [SerializeField] private float cIdleDuration = 3.0f; //전투상태 유지 시간
 
-        private float cIdleTimer;
-        private bool isCIdleTimer;
-        private bool isCombat;
+        private float cIdleTimer;  //전투상태 타이머
+        private bool isCIdleTimer; //전투상태 타이머 동작 여부
+        private bool isCombat;     //전투상태 여부
 
         public bool IsCombat => isCombat;
-
-
         public PlayerInputSystem PlayerInput => playerInput;
         public PlayerMovement PlayerMovement => playerMovement;
         public PlayerAttack PlayerAttack => playerAttack;
@@ -60,7 +59,7 @@ namespace Cromede.Player.State
             playerHealth = GetComponent<PlayerHealth>();
             playerAnimation = GetComponentInChildren<PlayerAnimation>();
 
-            //아래애들을 딕셔너리에 등록
+            //플레이어 상태 등록
             states = new Dictionary<PlayerStateType, PlayerState>()
             {
                 { PlayerStateType.Move, new PlayerMoveState(this) },
@@ -75,31 +74,38 @@ namespace Cromede.Player.State
                 { PlayerStateType.Interact, new PlayerInteractState(this) }
             };
         }
+
         private void Start()
         {
-            ChangeState(PlayerStateType.Move); //처음은 이동상태로 설정
+            //처음은 이동상태로 시작
+            ChangeState(PlayerStateType.Move);
         }
 
         private void OnEnable()
         {
+            //체력 이벤트 연결
             playerHealth.OnHit += Hit;
             playerHealth.OnDied += Die;
             playerHealth.OnRebirth += Rebirth;
 
+            //애니메이션 종료 이벤트 연결
             playerAnimation.OnAnimationEnd += AnimationEnd;
         }
 
         private void OnDisable()
         {
+            //체력 이벤트 해제
             playerHealth.OnHit -= Hit;
             playerHealth.OnDied -= Die;
             playerHealth.OnRebirth -= Rebirth;
 
+            //애니메이션 종료 이벤트 해제
             playerAnimation.OnAnimationEnd -= AnimationEnd;
         }
 
         private void Update()
         {
+            //전투상태 종료 타이머
             if (isCIdleTimer)
             {
                 cIdleTimer += Time.deltaTime;
@@ -110,6 +116,7 @@ namespace Cromede.Player.State
                 }
             }
 
+            //Stun / KnockDown 테스트용
             if (currentState is not PlayerDieState && currentState is not PlayerRebirthState)
             {
                 if (Keyboard.current.jKey.wasPressedThisFrame)
@@ -123,6 +130,7 @@ namespace Cromede.Player.State
                 }
             }
 
+            //현재 상태 Update 실행
             currentState?.Update();
         }
 
@@ -132,7 +140,7 @@ namespace Cromede.Player.State
             currentState?.OnAnimationEnd();
         }
 
-        //상태 전환
+        //현재 상태를 종료하고 다음 상태로 전환
         public void ChangeState(PlayerStateType nextStateType)
         {
             currentState?.Exit();
@@ -142,7 +150,7 @@ namespace Cromede.Player.State
             currentState.Enter();
         }
 
-        //점프 상태전환
+        //점프 종류 설정 후 점프 상태로 전환
         public void ChangeJumpState(bool isSprintJump)
         {
             PlayerJumpState jumpState = (PlayerJumpState)states[PlayerStateType.Jump];
@@ -151,7 +159,7 @@ namespace Cromede.Player.State
             ChangeState(PlayerStateType.Jump);
         }
 
-        //전투 상태 진입
+        //전투상태 진입
         public void EnterCombat()
         {
             isCombat = true;
@@ -161,7 +169,7 @@ namespace Cromede.Player.State
             playerAnimation.SetCombat(true);
         }
 
-        //전투 상태 종료
+        //전투상태 종료
         public void ExitCombat()
         {
             isCombat = false;
@@ -171,7 +179,7 @@ namespace Cromede.Player.State
             playerAnimation.SetCombat(false);
         }
 
-        //전투 대기 시간 시작
+        //전투상태 종료 타이머 시작
         public void StartCIdleTimer()
         {
             cIdleTimer = 0.0f;
@@ -181,13 +189,21 @@ namespace Cromede.Player.State
         //피격
         private void Hit(Vector3 hitPosition)
         {
-            if (currentState is not PlayerMoveState) return;
+            //이동상태에서만 일반 피격 애니메이션 재생
+            if (currentState is not PlayerMoveState)
+            {
+                return;
+            }
 
+            //공격이 들어온 방향 계산
             Vector3 hitDir = hitPosition - transform.position;
             hitDir.y = 0.0f;
             hitDir.Normalize();
 
+            //공격 방향을 플레이어 기준 방향으로 변환
             Vector3 localHitDir = transform.InverseTransformDirection(hitDir);
+
+            //피격 방향에 맞는 애니메이션 재생
             playerAnimation.SetHit(localHitDir.x, localHitDir.z);
         }
 
@@ -205,4 +221,3 @@ namespace Cromede.Player.State
         }
     }
 }
-

@@ -8,8 +8,9 @@ namespace Cromede.Player
     public class PlayerHealth : MonoBehaviour
     {
         [SerializeField] private int maxHealth = 100;
-        private int currentHealth;
-        private Coroutine burnCoroutine;
+
+        private int currentHealth;       //현재 체력
+        private Coroutine burnCoroutine; //화상 코루틴
 
         public event Action OnDamaged;
         public event Action<Vector3> OnHit;
@@ -18,58 +19,76 @@ namespace Cromede.Player
 
         private void Awake()
         {
+            //게임 시작 시 최대 체력으로 초기화
             currentHealth = maxHealth;
         }
 
         //피격
         public void TakeDamage(int damage)
         {
+            //이미 사망한 상태면 데미지 처리하지 않음
             if (currentHealth <= 0) return;
 
+            //데미지만큼 체력 감소
             currentHealth -= damage;
 
             Debug.Log($"{damage} : 플레이어 체력 {currentHealth}/{maxHealth}");
 
+            //체력이 0 이하가 되면 사망 처리
             if (currentHealth <= 0)
             {
                 Die();
                 return;
             }
 
+            //일반 피격 이벤트 실행
             OnDamaged?.Invoke();
         }
 
-        //방향정보 피격 DmgF,B,L,R
+        //방향정보가 포함된 피격
         public void TakeDamage(int damage, Vector3 hitPosition)
         {
+            //이미 사망한 상태면 데미지 처리하지 않음
             if (currentHealth <= 0) return;
 
+            //기본 데미지 처리
             TakeDamage(damage);
 
+            //데미지 처리 중 사망했으면 피격 애니메이션 실행하지 않음
             if (currentHealth <= 0) return;
 
+            //공격이 들어온 위치 전달
             OnHit?.Invoke(hitPosition);
         }
+
+        #region 사망
 
         //사망
         private void Die()
         {
             currentHealth = 0;
 
+            //사망하면 진행 중인 화상데미지 종료
             if (burnCoroutine != null)
             {
                 StopCoroutine(burnCoroutine);
                 burnCoroutine = null;
             }
 
+            //사망 이벤트 실행
             OnDied?.Invoke();
         }
+        #endregion
 
-        //화상데미지
+        #region 화상
+
+        //화상데미지 시작
         public void Burn(int damage, float duration, float damageInterval)
         {
+            //사망한 상태면 화상데미지 처리하지 않음
             if (currentHealth <= 0) return;
 
+            //이미 화상데미지가 진행 중이면 기존 코루틴 종료
             if (burnCoroutine != null)
             {
                 StopCoroutine(burnCoroutine);
@@ -78,10 +97,11 @@ namespace Cromede.Player
             burnCoroutine = StartCoroutine(BurnCoroutine(damage, duration, damageInterval));
         }
 
-        IEnumerator BurnCoroutine(int damage, float duration, float damageInterval)
+        private IEnumerator BurnCoroutine(int damage, float duration, float damageInterval)
         {
             float burnTimer = 0.0f;
 
+            //설정한 시간 동안 일정 간격으로 데미지 적용
             while (burnTimer < duration)
             {
                 yield return new WaitForSeconds(damageInterval);
@@ -94,41 +114,51 @@ namespace Cromede.Player
             burnCoroutine = null;
         }
 
+        #endregion
+
+        #region 부활
         //부활
         public void Rebirth()
         {
+            //살아있는 상태면 부활하지 않음
             if (currentHealth > 0) return;
 
+            //최대 체력으로 회복
             currentHealth = maxHealth;
 
             Debug.Log($"플레이어 부활 : {currentHealth}/{maxHealth}");
 
+            //부활 이벤트 실행
             OnRebirth?.Invoke();
         }
+        #endregion
 
-
-        //테스트
         private void Update()
         {
+            //일반 피격 테스트
             //if (Keyboard.current.hKey.wasPressedThisFrame)
             //{
             //    TakeDamage(10);
             //}
 
+            //방향 피격 테스트
             if (Keyboard.current.hKey.wasPressedThisFrame)
             {
                 Vector3 hitPosition = transform.position + transform.forward * 2.0f; //F
                 //Vector3 hitPosition = transform.position - transform.forward * 2.0f; //B
                 //Vector3 hitPosition = transform.position + transform.right * 2.0f; //R
                 //Vector3 hitPosition = transform.position - transform.right * 2.0f; //L
+
                 TakeDamage(10, hitPosition);
             }
 
+            //화상데미지 테스트
             if (Keyboard.current.lKey.wasPressedThisFrame)
             {
                 Burn(5, 5.0f, 1.0f);
             }
 
+            //부활 테스트
             if (Keyboard.current.rKey.wasPressedThisFrame)
             {
                 Rebirth();
@@ -136,4 +166,3 @@ namespace Cromede.Player
         }
     }
 }
-

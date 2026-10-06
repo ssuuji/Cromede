@@ -12,7 +12,7 @@ namespace Cromede.Player
         [SerializeField] private float targetRange = 30.0f;
         [SerializeField] private LayerMask enemyLayer;
 
-        private Transform currentTarget;
+        private Transform currentTarget; //현재 선택된 타겟
         private PlayerInputSystem playerInput;
 
         public Transform CurrentTarget => currentTarget;
@@ -24,15 +24,20 @@ namespace Cromede.Player
 
         private void Update()
         {
+            //ESC 입력 시 타겟 해제
             if (playerInput.IsEsc)
             {
                 currentTarget = null;
                 return;
             }
+
+            //타겟 변경 입력
             if (playerInput.IsTargetChange)
             {
+                //범위 안의 몬스터 찾기
                 Collider[] targets = GetTargets();
 
+                //플레이어와 가까운 순서로 정렬
                 Array.Sort(targets, (a, b) =>
                 {
                     float enemyA = (a.transform.position - player.position).sqrMagnitude;
@@ -41,6 +46,7 @@ namespace Cromede.Player
                     return enemyA.CompareTo(enemyB);
                 });
 
+                //다음 타겟 선택
                 FindTarget(targets);
 
                 if (currentTarget != null)
@@ -50,29 +56,32 @@ namespace Cromede.Player
             }
         }
 
+        //타겟 범위 안의 몬스터 찾기
         private Collider[] GetTargets()
         {
             return Physics.OverlapSphere(player.position, targetRange, enemyLayer);
         }
 
+        //현재 타겟을 기준으로 다음 타겟 선택
         private void FindTarget(Collider[] targets)
         {
+            //범위 안에 몬스터가 없으면 타겟 해제
             if (targets.Length == 0)
             {
                 currentTarget = null;
                 return;
             }
 
+            //현재 타겟이 없으면 가장 가까운 몬스터 선택
             if (currentTarget == null)
             {
-                //타겟이 없다면 가장 가까운 타겟을 현재 타겟으로
                 currentTarget = targets[0].transform;
                 return;
             }
 
             int currentIndex = -1;
 
-            //현재타겟의 index찾기
+            //현재 타겟의 index 찾기
             for (int i = 0; i < targets.Length; i++)
             {
                 if (targets[i].transform == currentTarget)
@@ -82,7 +91,7 @@ namespace Cromede.Player
                 }
             }
 
-            //기존 타겟이 없다면 가장 가까운 타겟으로 변경
+            //기존 타겟이 범위에서 벗어났다면 가장 가까운 몬스터 선택
             if (currentIndex == -1)
             {
                 currentTarget = targets[0].transform;
@@ -91,7 +100,7 @@ namespace Cromede.Player
 
             int nextIndex = currentIndex + 1;
 
-            //다음 index가 끝이라면 다시 0 부터
+            //마지막 타겟이면 다시 첫 번째 타겟으로
             if (nextIndex >= targets.Length)
             {
                 nextIndex = 0;
